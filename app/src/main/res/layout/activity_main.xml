@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.android.myappportfolio.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:paddingTop="16dp"
+        android:textSize="15sp"
+        android:text="@string/my_nanodegree_apps" />
+
+    <Button
+        android:id="@+id/hit_movie_button"
+        style="@style/ButtonStyle"
+        android:text="@string/hit_movie" />
+
+    <Button
+        android:id="@+id/stock_eagle_button"
+        style="@style/ButtonStyle"
+        android:text="@string/stock_eagle" />
+
+    <Button
+        android:id="@+id/xzy_reader_button"
+        style="@style/ButtonStyle"
+        android:text="@string/xzy_reader"/>
+
+    <Button
+        android:id="@+id/most_news_button"
+        style="@style/ButtonStyle"
+        android:text="@string/most_news"/>
+
+    <Button
+        android:id="@+id/graduation_project_button"
+        style="@style/ButtonStyle"
+        android:text="@string/graduation_project" />
+
+
+
+</LinearLayout>

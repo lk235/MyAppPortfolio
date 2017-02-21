@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My App Portfolio</string>
+    <string name="my_nanodegree_apps">纳米学位应用</string>
+    <string name="hit_movie">热门电影</string>
+    <string name="stock_eagle">股票雄鹰</string>
+    <string name="xzy_reader">XYZ 阅读器</string>
+    <string name="most_news">最新闻</string>
+    <string name="graduation_project">毕业设计</string>
+
+</resources>
