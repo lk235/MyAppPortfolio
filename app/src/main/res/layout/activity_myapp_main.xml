@@ -17,7 +17,7 @@
         android:text="@string/my_nanodegree_apps" />
 
     <Button
-        android:id="@+id/hit_movie_button"
+        android:id="@+id/hot_movie_button"
         style="@style/ButtonStyle"
         android:text="@string/hit_movie" />
 

@@ -1,4 +1,4 @@
-package com.example.android.topmoives;
+package com.example.android.myappportfolio.topMovies;
 
 
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.myappportfolio.R;
 import com.squareup.picasso.Picasso;
 
 
@@ -36,7 +37,7 @@ public class MoiveDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_moive_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         mMovieTitleTextView = (TextView)rootView.findViewById(R.id.movie_title_text_view);
         mMoiveImageView = (ImageView)rootView.findViewById(R.id.moive_image_view);
         mReleaseDateTextView = (TextView)rootView.findViewById(R.id.release_date_text_view);

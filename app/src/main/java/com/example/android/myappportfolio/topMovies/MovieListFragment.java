@@ -1,4 +1,4 @@
-package com.example.android.topmoives;
+package com.example.android.myappportfolio.topMovies;
 
 
 import android.content.Context;
@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.android.myappportfolio.R;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -196,7 +197,7 @@ public class MovieListFragment extends Fragment {
         private final String API_KEY = "api_key";
         private final String LANGUAGE = "language";
         String movieJsonStr = null;
-        String apiKey = "";
+        String apiKey = "3ec36d13c40b8c13f44a956ac6b7f785";
         String language = "zh";
 
 

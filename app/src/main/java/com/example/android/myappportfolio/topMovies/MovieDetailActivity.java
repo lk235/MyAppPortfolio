@@ -1,7 +1,9 @@
-package com.example.android.topmoives;
+package com.example.android.myappportfolio.topMovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.android.myappportfolio.R;
 
 public class MovieDetailActivity extends AppCompatActivity {
 

@@ -1,10 +1,12 @@
-package com.example.android.topmoives;
+package com.example.android.myappportfolio.topMovies;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+
+import com.example.android.myappportfolio.R;
 
 /**
  * Created by lk235 on 2017/3/15.
