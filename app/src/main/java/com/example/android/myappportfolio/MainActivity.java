@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Intent intent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intnet = new Intent(this , com.example.android.myappportfolio.topMovies.MainActivity.class);
             startActivity(intnet);
         }
-        Toast.makeText(this , "这个按钮将会启动应用\"" + ((Button)view).getText() +"\"", Toast.LENGTH_SHORT).show();;
+        Toast.makeText(this , "这个按钮将会启动应用\"" + ((Button)view).getText() +"\"", Toast.LENGTH_SHORT).show();
 
         }
     }
