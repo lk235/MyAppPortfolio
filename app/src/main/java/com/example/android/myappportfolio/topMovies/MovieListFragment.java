@@ -148,7 +148,6 @@ public class MovieListFragment extends Fragment {
         public MovieHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             final View view = inflater.inflate(R.layout.movie_item, viewGroup, false);
-            ;
             return new MovieHolder(view);
         }
 
@@ -183,9 +182,9 @@ public class MovieListFragment extends Fragment {
 
             }
         });
-        String pref_sort_type = sharedPreferences
+
+        return sharedPreferences
                 .getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
-        return pref_sort_type;
     }
 
 
@@ -197,7 +196,7 @@ public class MovieListFragment extends Fragment {
         private final String API_KEY = "api_key";
         private final String LANGUAGE = "language";
         String movieJsonStr = null;
-        String apiKey = "3ec36d13c40b8c13f44a956ac6b7f785";
+        String apiKey = "";
         String language = "zh";
 
 
@@ -276,11 +275,8 @@ public class MovieListFragment extends Fragment {
 
             {
                 stringArrayList = getMovieDataFromJson(movieJsonStr);
-            } catch (
-                    JSONException js)
-
-            {
-
+            } catch (JSONException js) {
+                Log.e(TAG ,"JSON ERROR");
             }
             mMovieLab = MovieLab.get(getActivity());
 
