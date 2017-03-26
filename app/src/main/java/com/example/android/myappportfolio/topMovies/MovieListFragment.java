@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -47,15 +49,29 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class MovieListFragment extends Fragment {
 
-    public static final String MOVIE_ITEM_POSITION = "itemPosition";
+
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
+    public static final String MOVIE_EXTRA = "movie extra";
     public MovieLab mMovieLab;
     private RecyclerView mMovieListRecylerView;
     private MoiveAdapter mMovieAdapter;
+    private String mLastSortType;
+
 
 
     public MovieListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        if(mMovieLab == null || !mLastSortType.equals(getPrefSortType())){
+            checkNetworkAndFetchData();
+        }else{
+
+        }
     }
 
     @Override
@@ -72,7 +88,7 @@ public class MovieListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
         mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
         mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        checkNetworkAndFetchData();
+       // checkNetworkAndFetchData();
         return rootView;
     }
 
@@ -121,6 +137,7 @@ public class MovieListFragment extends Fragment {
             Picasso.with(getActivity())
                     .load(movieItem.getImageUrl())
                     .placeholder(R.drawable.ic_sync_black_24dp)
+                    .error(R.drawable.ic_info_black_24dp)
                     .into(mMoiveImageView);
 
 
@@ -129,7 +146,7 @@ public class MovieListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-            intent.putExtra(MOVIE_ITEM_POSITION, getAdapterPosition());
+            intent.putExtra(MOVIE_EXTRA, mMovieLab.getMovie(getAdapterPosition()));
 
             startActivity(intent);
 
@@ -171,7 +188,7 @@ public class MovieListFragment extends Fragment {
      */
     private void updateMovieData() {
 
-        new FetchMovieDate().execute(getPrefSortType());
+        new FetchMovieData().execute(getPrefSortType());
     }
 
     private String getPrefSortType() {
@@ -182,13 +199,13 @@ public class MovieListFragment extends Fragment {
 
             }
         });
+        mLastSortType = sharedPreferences.getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
 
-        return sharedPreferences
-                .getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
+        return  mLastSortType;
     }
 
+    public class FetchMovieData extends AsyncTask<String, Void, MovieLab> {
 
-    public class FetchMovieDate extends AsyncTask<String, Void, MovieLab> {
         private final String TAG = "FetchMovieData";
         private final String MOVIE_URL = "http://api.themoviedb.org/3/movie";
         private final String IMAGE_URL = "https://image.tmdb.org/t/p/w185";
@@ -196,8 +213,9 @@ public class MovieListFragment extends Fragment {
         private final String API_KEY = "api_key";
         private final String LANGUAGE = "language";
         String movieJsonStr = null;
-        String apiKey = "";
+        String apiKey = "3ec36d13c40b8c13f44a956ac6b7f785";
         String language = "zh";
+
 
 
         protected MovieLab doInBackground(String... queryType) {
@@ -218,6 +236,8 @@ public class MovieListFragment extends Fragment {
                 Log.i(TAG, url + "");
 
                 urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setConnectTimeout(5000);
+                urlConnection.setReadTimeout(10000);
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
@@ -276,7 +296,7 @@ public class MovieListFragment extends Fragment {
             {
                 stringArrayList = getMovieDataFromJson(movieJsonStr);
             } catch (JSONException js) {
-                Log.e(TAG ,"JSON ERROR");
+                Log.e(TAG, "JSON ERROR");
             }
             mMovieLab = MovieLab.get(getActivity());
 
@@ -305,16 +325,13 @@ public class MovieListFragment extends Fragment {
         protected void onPostExecute(MovieLab result) {
 
 
-            mMovieAdapter = new MoiveAdapter(result.getmMovies());
+            mMovieAdapter = new MovieListFragment.MoiveAdapter(result.getmMovies());
 
             mMovieListRecylerView.setAdapter(mMovieAdapter);
 
 
         }
-
-
     }
-
 
     private ArrayList<String[]> getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
@@ -352,6 +369,13 @@ public class MovieListFragment extends Fragment {
         return resultStrs;
 
     }
+
+
+
+
+
+
+
 
     public boolean isOnline() {
         ConnectivityManager cm =

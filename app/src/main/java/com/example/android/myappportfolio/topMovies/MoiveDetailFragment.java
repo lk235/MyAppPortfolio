@@ -43,9 +43,8 @@ public class MoiveDetailFragment extends Fragment {
         mReleaseDateTextView = (TextView)rootView.findViewById(R.id.release_date_text_view);
         mVoteAverageTextView = (TextView)rootView.findViewById(R.id.vote_average_text_view);
         mOverViewTextView = (TextView)rootView.findViewById(R.id.overview_text_view);
-        int position = (int)getActivity().getIntent().getSerializableExtra(MovieListFragment.MOVIE_ITEM_POSITION);
 
-        movie = MovieLab.get(getActivity()).getMovie(position);
+        movie = getActivity().getIntent().getParcelableExtra(MovieListFragment.MOVIE_EXTRA);
         mMovieTitleTextView.setText(movie.getTitle());
         Picasso.with(getActivity())
                 .load(movie.getImageUrl())

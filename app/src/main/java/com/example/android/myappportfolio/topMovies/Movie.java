@@ -1,10 +1,13 @@
 package com.example.android.myappportfolio.topMovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by lk235 on 2017/3/14.
  */
 
-public class Movie {
+public class Movie implements Parcelable {
 
 
     private int id;
@@ -12,12 +15,14 @@ public class Movie {
 
     private String title;
 
-
-
     private String release_date;
 
     private String vote;
     private String overview;
+
+    public Movie(){
+
+    }
 
     public int getId() {
         return id;
@@ -65,6 +70,43 @@ public class Movie {
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
     }
+
+
+    public void writeToParcel(Parcel out, int flags){
+        out.writeInt(id);
+        out.writeString(imageUrl);
+        out.writeString(title);
+        out.writeString(release_date);
+        out.writeString(vote);
+        out.writeString(overview);
+
+    }
+
+    public int describeContents(){
+       return 0;
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR =
+            new Parcelable.Creator<Movie>(){
+                public Movie createFromParcel(Parcel in){
+                    return new Movie(in);
+                }
+
+                public Movie[] newArray(int size){
+                    return new Movie[size];
+                }
+            };
+
+            public Movie(Parcel in){
+                this.id = in.readInt();
+                this.imageUrl = in.readString();
+                this.title = in.readString();
+                this.release_date = in.readString();
+                this.vote = in.readString();
+                this.overview = in.readString();
+
+            }
+
 
 
 
