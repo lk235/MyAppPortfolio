@@ -213,7 +213,7 @@ public class MovieListFragment extends Fragment {
         private final String API_KEY = "api_key";
         private final String LANGUAGE = "language";
         String movieJsonStr = null;
-        String apiKey = "3ec36d13c40b8c13f44a956ac6b7f785";
+        String apiKey = "";
         String language = "zh";
 
 
