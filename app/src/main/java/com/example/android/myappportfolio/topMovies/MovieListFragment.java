@@ -4,6 +4,7 @@ package com.example.android.myappportfolio.topMovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.myappportfolio.R;
+import com.example.android.myappportfolio.topMovies.data.MovieDBHelper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -66,6 +68,7 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+
 
         if(mMovieLab == null || !mLastSortType.equals(getPrefSortType())){
             checkNetworkAndFetchData();
