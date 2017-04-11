@@ -54,7 +54,7 @@ public class MovieListFragment extends Fragment {
 
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
     public static final String MOVIE_EXTRA = "movie extra";
-    public MovieLab mMovieLab;
+    public MovieLab mMovieLab = MovieLab.get(getActivity());
     private RecyclerView mMovieListRecylerView;
     private MoiveAdapter mMovieAdapter;
     private String mLastSortType;
@@ -70,7 +70,12 @@ public class MovieListFragment extends Fragment {
         super.onStart();
 
 
-        if(mMovieLab == null || !mLastSortType.equals(getPrefSortType())){
+//         if(mMovieLab == null || !mLastSortType.equals(getPrefSortType())){
+//            checkNetworkAndFetchData();
+//        }else{
+//
+//        }
+        if(mMovieLab == null || !getPrefSortType().equals(mLastSortType)){
             checkNetworkAndFetchData();
         }else{
 
@@ -91,6 +96,8 @@ public class MovieListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
         mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
         mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
+        mMovieListRecylerView.setAdapter(mMovieAdapter);
        // checkNetworkAndFetchData();
         return rootView;
     }
@@ -164,6 +171,10 @@ public class MovieListFragment extends Fragment {
             mMovies = movies;
         }
 
+        public void addMovie(List<Movie> movies){
+            mMovies = movies;
+        }
+
         @Override
         public MovieHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -191,7 +202,10 @@ public class MovieListFragment extends Fragment {
      */
     private void updateMovieData() {
 
-        new FetchMovieData().execute(getPrefSortType());
+
+
+        new FetchMovieTask(getActivity(), mMovieAdapter, mMovieLab).execute(getPrefSortType());
+
     }
 
     private String getPrefSortType() {
@@ -207,134 +221,7 @@ public class MovieListFragment extends Fragment {
         return  mLastSortType;
     }
 
-    public class FetchMovieData extends AsyncTask<String, Void, MovieLab> {
 
-        private final String TAG = "FetchMovieData";
-        private final String MOVIE_URL = "http://api.themoviedb.org/3/movie";
-        private final String IMAGE_URL = "https://image.tmdb.org/t/p/w185";
-        private final String VOTE = "VOTE: ";
-        private final String API_KEY = "api_key";
-        private final String LANGUAGE = "language";
-        String movieJsonStr = null;
-        String apiKey = "3ec36d13c40b8c13f44a956ac6b7f785";
-        String language = "zh";
-
-
-
-        protected MovieLab doInBackground(String... queryType) {
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            ArrayList<String[]> stringArrayList = null;
-
-            try
-
-            {
-                Uri uri = Uri.parse(MOVIE_URL).buildUpon()
-                        .appendPath(queryType[0])
-                        .appendQueryParameter(LANGUAGE, language)
-                        .appendQueryParameter(API_KEY, apiKey)
-                        .build();
-
-                URL url = new URL(uri.toString());
-                Log.i(TAG, url + "");
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setConnectTimeout(5000);
-                urlConnection.setReadTimeout(10000);
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                int responseCode = urlConnection.getResponseCode();
-                Log.i(TAG, "code= " + responseCode);
-                if (responseCode != HttpsURLConnection.HTTP_OK) {
-                    throw new IOException("HTTP error code: " + responseCode);
-                }
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer stringBuffer = new StringBuffer();
-
-                if (inputStream == null) {
-
-                    movieJsonStr = null;
-                }
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-
-                    stringBuffer.append(line + "\n");
-                }
-
-                if (stringBuffer.length() == 0) {
-
-                    movieJsonStr = null;
-                }
-                movieJsonStr = stringBuffer.toString();
-
-            } catch (
-                    IOException ioe)
-
-            {
-                movieJsonStr = null;
-                Log.i(TAG, "" + ioe);
-            } finally
-
-            {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(TAG, "Error closing stream", e);
-                    }
-                }
-
-            }
-
-
-            try
-
-            {
-                stringArrayList = getMovieDataFromJson(movieJsonStr);
-            } catch (JSONException js) {
-                Log.e(TAG, "JSON ERROR");
-            }
-            mMovieLab = MovieLab.get(getActivity());
-
-            if (mMovieLab.isNotEmpty()) {
-                mMovieLab.clearMovies();
-            }
-
-            for (int i = 0; i < stringArrayList.size(); i++)
-
-            {
-                Movie movie = new Movie();
-                movie.setTitle(stringArrayList.get(i)[0]);
-                movie.setImageUrl(IMAGE_URL + stringArrayList.get(i)[1]);
-                movie.setRelease_date(stringArrayList.get(i)[2]);
-                movie.setVote(VOTE + stringArrayList.get(i)[3]);
-                movie.setOverview(stringArrayList.get(i)[4]);
-
-                mMovieLab.addMovie(movie);
-
-            }
-
-            return mMovieLab;
-        }
-
-
-        protected void onPostExecute(MovieLab result) {
-
-
-            mMovieAdapter = new MovieListFragment.MoiveAdapter(result.getmMovies());
-
-            mMovieListRecylerView.setAdapter(mMovieAdapter);
-
-
-        }
-    }
 
     private ArrayList<String[]> getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
