@@ -24,6 +24,11 @@
         <activity android:name=".topMovies.MovieDetailActivity"
             android:parentActivityName=".topMovies.MainActivity"></activity>
         <activity android:name=".topMovies.SettingActivity"></activity>
+
+        <provider
+            android:authorities="com.example.android.myappportfolio.topMovies"
+            android:name=".topMovies.data.MovieProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

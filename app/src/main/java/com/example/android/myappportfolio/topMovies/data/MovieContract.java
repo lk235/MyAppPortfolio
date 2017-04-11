@@ -28,16 +28,25 @@ public class MovieContract {
                 ContentResolver.ANY_CURSOR_ITEM_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
 
         public static final String TABLE_NAME = "movie";
+        public static final String COLUMN_CATEGROY_SETTING = "categroy_setting";
         public static final String COLUMN_IMAGE_URL = "imageUrl";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_RELEASE_DATE = "release_date";
         public static final String COLUMN_VOTE = "vote";
         public static final String COLUMN_OVER_VIEW = "overview";
 
- 
+
 
         public static Uri buildMovieByCategory(String category){
             return CONTENT_URI.buildUpon().appendPath(category).build();
+        }
+
+        public static String getCategroySettingFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        public static Uri buildMovieUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 

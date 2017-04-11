@@ -51,6 +51,8 @@ public class TestUtilities extends AndroidTestCase {
      */
     static ContentValues createMovieValues() {
         ContentValues MovieValues = new ContentValues();
+
+        MovieValues.put(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING, "popular");
         MovieValues.put(MovieContract.MovieEntry.COLUMN_IMAGE_URL, "www.themoviedb.org/");
         MovieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, "title");
         MovieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, 2016-8-26);
@@ -77,7 +79,7 @@ public class TestUtilities extends AndroidTestCase {
         movieRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        assertTrue("Error: Failure to insert North Pole Location Values", movieRowId != -1);
+        assertTrue("Error: Failure to insert popular categroy Values", movieRowId != -1);
 
         return movieRowId;
     }
