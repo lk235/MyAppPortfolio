@@ -45,6 +45,8 @@ import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,13 +71,7 @@ public class MovieListFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-
-//         if(mMovieLab == null || !mLastSortType.equals(getPrefSortType())){
-//            checkNetworkAndFetchData();
-//        }else{
-//
-//        }
-        if(mMovieLab == null || !getPrefSortType().equals(mLastSortType)){
+        if(!mMovieLab.isNotEmpty() || !mLastSortType.equals(getPrefSortType())){
             checkNetworkAndFetchData();
         }else{
 

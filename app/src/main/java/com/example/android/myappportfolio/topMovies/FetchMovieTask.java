@@ -159,6 +159,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
         //mMovieAdapter = new MovieListFragment.MoiveAdapter(result.getmMovies());
         mMovieAdapter.addMovie(result.getmMovies());
+        mMovieAdapter.notifyDataSetChanged();
         //mMovieListRecylerView.setAdapter(mMovieAdapter);
 
 
