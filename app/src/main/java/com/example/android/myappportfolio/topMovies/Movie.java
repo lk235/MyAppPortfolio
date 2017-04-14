@@ -11,6 +11,10 @@ public class Movie implements Parcelable {
 
 
     private int id;
+
+
+
+    private String categroy;
     private String imageUrl;
 
     private String title;
@@ -22,6 +26,14 @@ public class Movie implements Parcelable {
 
     public Movie(){
 
+    }
+
+    public String getCategroy() {
+        return categroy;
+    }
+
+    public void setCategroy(String categroy) {
+        this.categroy = categroy;
     }
 
     public int getId() {

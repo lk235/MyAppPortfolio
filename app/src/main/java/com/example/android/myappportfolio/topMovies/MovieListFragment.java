@@ -57,6 +57,7 @@ public class MovieListFragment extends Fragment {
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
     public static final String MOVIE_EXTRA = "movie extra";
     public MovieLab mMovieLab = MovieLab.get(getActivity());
+
     private RecyclerView mMovieListRecylerView;
     private MoiveAdapter mMovieAdapter;
     private String mLastSortType;
@@ -72,6 +73,7 @@ public class MovieListFragment extends Fragment {
         super.onStart();
 
         if(!mMovieLab.isNotEmpty() || !mLastSortType.equals(getPrefSortType())){
+
             checkNetworkAndFetchData();
         }else{
 
@@ -152,7 +154,7 @@ public class MovieListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-            intent.putExtra(MOVIE_EXTRA, mMovieLab.getMovie(getAdapterPosition()));
+           // intent.putExtra(MOVIE_EXTRA, mMovieLab.getMovie(getAdapterPosition()));
 
             startActivity(intent);
 
@@ -201,6 +203,7 @@ public class MovieListFragment extends Fragment {
 
 
         new FetchMovieTask(getActivity(), mMovieAdapter, mMovieLab).execute(getPrefSortType());
+
 
     }
 
