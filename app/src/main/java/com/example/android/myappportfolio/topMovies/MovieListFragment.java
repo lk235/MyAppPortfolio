@@ -4,6 +4,7 @@ package com.example.android.myappportfolio.topMovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.myappportfolio.R;
+import com.example.android.myappportfolio.topMovies.data.MovieContract;
 import com.example.android.myappportfolio.topMovies.data.MovieDBHelper;
 import com.squareup.picasso.Picasso;
 
@@ -56,7 +58,7 @@ public class MovieListFragment extends Fragment {
 
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
     public static final String MOVIE_EXTRA = "movie extra";
-    public MovieLab mMovieLab = MovieLab.get(getActivity());
+    public MovieLab mMovieLab;
 
     private RecyclerView mMovieListRecylerView;
     private MoiveAdapter mMovieAdapter;
@@ -72,12 +74,27 @@ public class MovieListFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        if(!mMovieLab.isNotEmpty() || !mLastSortType.equals(getPrefSortType())){
+//        if(!mMovieLab.isNotEmpty() || !mLastSortType.equals(getPrefSortType())){
+//
+//            checkNetworkAndFetchData();
+//        }else{
+//
+//        }
+
+
+        if(mMovieLab.isEmpty() || !getPrefSortType().equals(mLastSortType)){
+
 
             checkNetworkAndFetchData();
+            mLastSortType = getPrefSortType();
         }else{
 
         }
+
+
+
+
+
     }
 
     @Override
@@ -94,6 +111,7 @@ public class MovieListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
         mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
         mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mMovieLab  = MovieLab.get(getActivity());
         mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
         mMovieListRecylerView.setAdapter(mMovieAdapter);
        // checkNetworkAndFetchData();
@@ -215,9 +233,9 @@ public class MovieListFragment extends Fragment {
 
             }
         });
-        mLastSortType = sharedPreferences.getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
+        String lastSortType = sharedPreferences.getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
 
-        return  mLastSortType;
+        return lastSortType;
     }
 
 

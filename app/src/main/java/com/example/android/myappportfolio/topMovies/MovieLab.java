@@ -85,6 +85,7 @@ public class MovieLab {
 
 
 
+       // return null;
         return null;
     }
 
@@ -96,15 +97,29 @@ public class MovieLab {
 
     public void clearMovies(){
         //mMovies.clear();
+        mContext.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null);
     }
 
-    public boolean isNotEmpty(){
+    public boolean isEmpty(){
 //        if(mMovies.size() > 0){
 //            return true;
 //        }else {
 //            return false;
 //        }
-        return true;
+       Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+               null,
+               null,
+               null,
+               null,
+               null);
+
+        if(cursor.getCount() == 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 
