@@ -27,7 +27,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private final Context mContext;
-    private MovieListFragment.MoiveAdapter mMovieAdapter;
+    private MovieAdapter mMovieAdapter;
     private MovieLab mMovieLab;
 
     private final String TAG = "FetchMovieData";
@@ -41,7 +41,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
     String language = "zh";
 
 
-    public FetchMovieTask(Context context, MovieListFragment.MoiveAdapter moiveAdapter, MovieLab movieLab){
+    public FetchMovieTask(Context context, MovieAdapter moiveAdapter, MovieLab movieLab){
         mContext = context;
         mMovieAdapter = moiveAdapter;
         mMovieLab = movieLab;
@@ -162,8 +162,11 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
 
         //mMovieAdapter = new MovieListFragment.MoiveAdapter(result.getmMovies());
-        mMovieAdapter.addMovie(result.getmMovies());
-        mMovieAdapter.notifyDataSetChanged();
+        //mMovieAdapter.addMovie(result.getmMovies());
+        mMovieAdapter.clear();
+        mMovieAdapter.addAll(result.getmMovies());
+        Log.e("NOW", "" + mMovieAdapter);
+        //mMovieAdapter.notifyDataSetChanged();
         //mMovieListRecylerView.setAdapter(mMovieAdapter);
 
 

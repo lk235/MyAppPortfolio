@@ -23,7 +23,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.android.myappportfolio.R;
@@ -59,9 +62,11 @@ public class MovieListFragment extends Fragment {
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
     public static final String MOVIE_EXTRA = "movie extra";
     public MovieLab mMovieLab;
+    public List<Movie> mMovies;
 
-    private RecyclerView mMovieListRecylerView;
-    private MoiveAdapter mMovieAdapter;
+   // private RecyclerView mMovieListRecylerView;
+    private MovieAdapter mMovieAdapter;
+
     private String mLastSortType;
 
 
@@ -74,13 +79,6 @@ public class MovieListFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-//        if(!mMovieLab.isNotEmpty() || !mLastSortType.equals(getPrefSortType())){
-//
-//            checkNetworkAndFetchData();
-//        }else{
-//
-//        }
-
 
         if(mMovieLab.isEmpty() || !getPrefSortType().equals(mLastSortType)){
 
@@ -90,9 +88,6 @@ public class MovieListFragment extends Fragment {
         }else{
 
         }
-
-
-
 
 
     }
@@ -108,12 +103,19 @@ public class MovieListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
-        mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
-        mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        View rootView = inflater.inflate(R.layout.fragment_movie_main, container, false);
+//        mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
+//        mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        GridView gridView = (GridView)rootView.findViewById(R.id.gridview_movie);
         mMovieLab  = MovieLab.get(getActivity());
-        mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
-        mMovieListRecylerView.setAdapter(mMovieAdapter);
+        mMovies = mMovieLab.getmMovies();
+
+        //mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
+        mMovieAdapter = new MovieAdapter(getActivity(), R.layout.movie_item, mMovies);
+        gridView.setAdapter(mMovieAdapter);
+        Log.e("ORIGIN", "" + mMovieAdapter);
+
+       // mMovieListRecylerView.setAdapter(mMovieAdapter);
        // checkNetworkAndFetchData();
         return rootView;
     }
@@ -150,68 +152,68 @@ public class MovieListFragment extends Fragment {
     }
 
 
-    public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mMoiveImageView;
-
-        public MovieHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(this);
-            mMoiveImageView = (ImageView) itemView.findViewById(R.id.movie_image_item);
-        }
-
-        public void bindMovieItem(Movie movieItem) {
-            Picasso.with(getActivity())
-                    .load(movieItem.getImageUrl())
-                    .placeholder(R.drawable.ic_sync_black_24dp)
-                    .error(R.drawable.ic_info_black_24dp)
-                    .into(mMoiveImageView);
-
-
-        }
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-           // intent.putExtra(MOVIE_EXTRA, mMovieLab.getMovie(getAdapterPosition()));
-
-            startActivity(intent);
-
-
-        }
-    }
-
-    public class MoiveAdapter extends RecyclerView.Adapter<MovieHolder> {
-        private List<Movie> mMovies;
-
-        public MoiveAdapter(List<Movie> movies) {
-            mMovies = movies;
-        }
-
-        public void addMovie(List<Movie> movies){
-            mMovies = movies;
-        }
-
-        @Override
-        public MovieHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            final View view = inflater.inflate(R.layout.movie_item, viewGroup, false);
-            return new MovieHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(MovieHolder movieHolder, int positon) {
-            Movie movieItem = mMovies.get(positon);
-            movieHolder.bindMovieItem(movieItem);
-
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mMovies.size();
-        }
-
-    }
+//    public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+//        private ImageView mMoiveImageView;
+//
+//        public MovieHolder(View itemView) {
+//            super(itemView);
+//            itemView.setOnClickListener(this);
+//            mMoiveImageView = (ImageView) itemView.findViewById(R.id.movie_image_item);
+//        }
+//
+//        public void bindMovieItem(Movie movieItem) {
+//            Picasso.with(getActivity())
+//                    .load(movieItem.getImageUrl())
+//                    .placeholder(R.drawable.ic_sync_black_24dp)
+//                    .error(R.drawable.ic_info_black_24dp)
+//                    .into(mMoiveImageView);
+//
+//
+//        }
+//
+//        @Override
+//        public void onClick(View view) {
+//            Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+//           // intent.putExtra(MOVIE_EXTRA, mMovieLab.getMovie(getAdapterPosition()));
+//
+//            startActivity(intent);
+//
+//
+//        }
+//    }
+//
+//    public class MoiveAdapter extends RecyclerView.Adapter<MovieHolder> {
+//        private List<Movie> mMovies;
+//
+//        public MoiveAdapter(List<Movie> movies) {
+//            mMovies = movies;
+//        }
+//
+//        public void addMovie(List<Movie> movies){
+//            mMovies = movies;
+//        }
+//
+//        @Override
+//        public MovieHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+//            LayoutInflater inflater = LayoutInflater.from(getActivity());
+//            final View view = inflater.inflate(R.layout.movie_item, viewGroup, false);
+//            return new MovieHolder(view);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(MovieHolder movieHolder, int positon) {
+//            Movie movieItem = mMovies.get(positon);
+//            movieHolder.bindMovieItem(movieItem);
+//
+//
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return mMovies.size();
+//        }
+//
+//    }
 
     /**
      * This method get the sharedPreftrence value and call the asyncTask to get movie data.
