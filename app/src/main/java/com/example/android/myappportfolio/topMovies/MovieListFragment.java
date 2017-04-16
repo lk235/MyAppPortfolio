@@ -14,6 +14,9 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,7 +59,8 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieListFragment extends Fragment {
+public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final int MOVIE_LOADER = 0;
 
 
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
@@ -68,6 +72,7 @@ public class MovieListFragment extends Fragment {
     private MovieAdapter mMovieAdapter;
 
     private String mLastSortType;
+
 
 
 
@@ -109,15 +114,48 @@ public class MovieListFragment extends Fragment {
         GridView gridView = (GridView)rootView.findViewById(R.id.gridview_movie);
         mMovieLab  = MovieLab.get(getActivity());
         mMovies = mMovieLab.getmMovies();
+       Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null,
+                null);
 
         //mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
-        mMovieAdapter = new MovieAdapter(getActivity(), R.layout.movie_item, mMovies);
+        mMovieAdapter = new MovieAdapter(getActivity(), cursor, 0);
         gridView.setAdapter(mMovieAdapter);
         Log.e("ORIGIN", "" + mMovieAdapter);
 
        // mMovieListRecylerView.setAdapter(mMovieAdapter);
        // checkNetworkAndFetchData();
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle){
+        return  new CursorLoader(getActivity(),
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor){
+              mMovieAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader){
+        mMovieAdapter.swapCursor(null);
     }
 
     @Override
@@ -222,7 +260,7 @@ public class MovieListFragment extends Fragment {
 
 
 
-        new FetchMovieTask(getActivity(), mMovieAdapter, mMovieLab).execute(getPrefSortType());
+        new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefSortType());
 
 
     }

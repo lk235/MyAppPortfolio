@@ -27,7 +27,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private final Context mContext;
-    private MovieAdapter mMovieAdapter;
+   // private MovieAdapter mMovieAdapter;
     private MovieLab mMovieLab;
 
     private final String TAG = "FetchMovieData";
@@ -41,9 +41,9 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
     String language = "zh";
 
 
-    public FetchMovieTask(Context context, MovieAdapter moiveAdapter, MovieLab movieLab){
+    public FetchMovieTask(Context context, MovieLab movieLab){
         mContext = context;
-        mMovieAdapter = moiveAdapter;
+        //mMovieAdapter = moiveAdapter;
         mMovieLab = movieLab;
 
     }
@@ -158,19 +158,19 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
     }
 
 
-    protected void onPostExecute(MovieLab result) {
-
-
-        //mMovieAdapter = new MovieListFragment.MoiveAdapter(result.getmMovies());
-        //mMovieAdapter.addMovie(result.getmMovies());
-        mMovieAdapter.clear();
-        mMovieAdapter.addAll(result.getmMovies());
-        Log.e("NOW", "" + mMovieAdapter);
-        //mMovieAdapter.notifyDataSetChanged();
-        //mMovieListRecylerView.setAdapter(mMovieAdapter);
-
-
-    }
+//    protected void onPostExecute(MovieLab result) {
+//
+//
+//        //mMovieAdapter = new MovieListFragment.MoiveAdapter(result.getmMovies());
+//        //mMovieAdapter.addMovie(result.getmMovies());
+//        mMovieAdapter.clear();
+//        mMovieAdapter.addAll(result.getmMovies());
+//        Log.e("NOW", "" + mMovieAdapter);
+//        //mMovieAdapter.notifyDataSetChanged();
+//        //mMovieListRecylerView.setAdapter(mMovieAdapter);
+//
+//
+//    }
 
     private ArrayList<String[]> getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
