@@ -43,9 +43,9 @@ public class MovieAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor){
 
-        int idx_image_url = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL);
+        //int idx_image_url = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL);
                     ImageView imageView = (ImageView) view.findViewById(R.id.movie_image_item);
-        String imageUrl = cursor.getString(idx_image_url);
+        String imageUrl = cursor.getString(MovieListFragment.COL_IMAGE_URL);
             Picasso.with(context)
                     .load(imageUrl)
                     .placeholder(R.drawable.ic_sync_black_24dp)

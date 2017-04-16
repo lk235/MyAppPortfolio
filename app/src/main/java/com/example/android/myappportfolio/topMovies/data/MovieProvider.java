@@ -22,6 +22,7 @@ public class MovieProvider extends ContentProvider {
 
     public static final int MOVIE = 100;
     public static final int MOVIE_BY_CATEGORY = 101;
+    public static final int MOVIE_BY_ID = 102;
 
 
    // private static final SQLiteQueryBuilder sMovieByCATEGORYQueryBuilder = new SQLiteQueryBuilder();
@@ -32,6 +33,7 @@ public class MovieProvider extends ContentProvider {
 
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
         matcher.addURI(authority, MovieContract.PATH_MOVIE + "/*", MOVIE_BY_CATEGORY);
+        matcher.addURI(authority, MovieContract.PATH_MOVIE + "/#", MOVIE_BY_ID);
 
         return matcher;
 
@@ -40,6 +42,9 @@ public class MovieProvider extends ContentProvider {
     //categroy.categroy_setting = ?
     private static final String sCategroySettingSelection =
             MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + "=? ";
+
+    private static final String sID =
+            MovieContract.MovieEntry._ID + " =?";
 
 
     private Cursor getMovieByCategroySetting(Uri uri, String[] projection, String sortOrder) {
@@ -61,6 +66,27 @@ public class MovieProvider extends ContentProvider {
 
     }
 
+    private Cursor getMovieByID(Uri uri, String[] projection) {
+        //String cateGroySetting = MovieContract.MovieEntry.getCategroySettingFromUri(uri);
+        String selection = sID;
+        String movie_id = MovieContract.MovieEntry.getIDFromUri(uri);
+        String[] selectionArgs = new String[]{movie_id};
+
+        return mOpenHelper.getReadableDatabase().query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+
+
+
+
+    }
+
+
     @Override
     public boolean onCreate(){
         mOpenHelper = new MovieDBHelper(getContext());
@@ -76,6 +102,8 @@ public class MovieProvider extends ContentProvider {
                 return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_BY_CATEGORY:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
+            case  MOVIE_BY_ID:
+                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             default:
                 throw  new UnsupportedOperationException("Unknow uri" + uri);
         }
@@ -102,6 +130,10 @@ public class MovieProvider extends ContentProvider {
 
             case MOVIE_BY_CATEGORY:
                 returnCusor = getMovieByCategroySetting(uri, projection, sortOrder);
+                break;
+
+            case MOVIE_BY_ID:
+                returnCusor = getMovieByID(uri, projection);
                 break;
 
             default:

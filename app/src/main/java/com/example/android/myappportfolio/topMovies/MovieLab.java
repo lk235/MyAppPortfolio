@@ -53,7 +53,7 @@ public class MovieLab {
         List<Movie> movies = new ArrayList<>();
 
         Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                null,
+                MovieListFragment.MOVIE_COLUMNS,
                 null,
                 null,
                 null,

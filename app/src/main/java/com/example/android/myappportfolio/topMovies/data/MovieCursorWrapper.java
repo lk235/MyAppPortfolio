@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.example.android.myappportfolio.topMovies.Movie;
+import com.example.android.myappportfolio.topMovies.MovieListFragment;
 
 /**
  * Created by lk235 on 2017/4/13.
@@ -14,12 +15,19 @@ public class MovieCursorWrapper extends CursorWrapper {
         super(cursor);
     }
     public Movie getMovie(){
-        String categroy = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING));
-        String imageUrl = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL));
-        String title = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
-        String release_date = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE));
-        String vote = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE));
-        String overview = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_OVER_VIEW));
+//        String categroy = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING));
+//        String imageUrl = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL));
+//        String title = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+//        String release_date = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE));
+//        String vote = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE));
+//        String overview = getString(getColumnIndex(MovieContract.MovieEntry.COLUMN_OVER_VIEW));
+
+        String categroy = getString(MovieListFragment.COL_MOVIE_CATEGROY_SETTING);
+        String imageUrl = getString(MovieListFragment.COL_IMAGE_URL);
+        String title = getString(MovieListFragment.COL_COLUMN_TITLE);
+        String release_date = getString(MovieListFragment.COL_COLUMN_RELEASE_DATE);
+        String vote = getString(MovieListFragment.COL_COLUMN_VOTE);
+        String overview = getString(MovieListFragment.COL_COLUMN_OVER_VIEW);
 
         Movie movie = new Movie();
         movie.setCategroy(categroy);

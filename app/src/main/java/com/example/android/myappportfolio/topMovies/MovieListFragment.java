@@ -26,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -62,6 +63,24 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int MOVIE_LOADER = 0;
 
+    public static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING,
+            MovieContract.MovieEntry.COLUMN_IMAGE_URL,
+            MovieContract.MovieEntry.COLUMN_TITLE,
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+            MovieContract.MovieEntry.COLUMN_VOTE,
+            MovieContract.MovieEntry.COLUMN_OVER_VIEW
+    };
+    // These indices are tied to MOVIE_COLUMNS
+    public static final int COL_MOVIE_ID = 0;
+    public static final int COL_MOVIE_CATEGROY_SETTING = 1;
+    public static final int COL_IMAGE_URL = 2;
+    public static final int COL_COLUMN_TITLE = 3;
+    public static final int COL_COLUMN_RELEASE_DATE = 4;
+    public static final int COL_COLUMN_VOTE = 5;
+    public static final int COL_COLUMN_OVER_VIEW = 6;
+
 
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
     public static final String MOVIE_EXTRA = "movie extra";
@@ -84,16 +103,13 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public void onStart(){
         super.onStart();
 
-
         if(mMovieLab.isEmpty() || !getPrefSortType().equals(mLastSortType)){
-
 
             checkNetworkAndFetchData();
             mLastSortType = getPrefSortType();
         }else{
 
         }
-
 
     }
 
@@ -105,7 +121,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie_main, container, false);
@@ -114,17 +130,30 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         GridView gridView = (GridView)rootView.findViewById(R.id.gridview_movie);
         mMovieLab  = MovieLab.get(getActivity());
         mMovies = mMovieLab.getmMovies();
-       Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null,
-                null);
+//       Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null);
 
         //mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
-        mMovieAdapter = new MovieAdapter(getActivity(), cursor, 0);
+        mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         gridView.setAdapter(mMovieAdapter);
-        Log.e("ORIGIN", "" + mMovieAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                if(cursor != null){
+                    Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+                    intent.setData(MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID)));
+
+                    startActivity(intent);
+                }
+            }
+        });
+
 
        // mMovieListRecylerView.setAdapter(mMovieAdapter);
        // checkNetworkAndFetchData();
@@ -141,7 +170,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle){
         return  new CursorLoader(getActivity(),
                 MovieContract.MovieEntry.CONTENT_URI,
-                null,
+                MOVIE_COLUMNS,
                 null,
                 null,
                 null);
