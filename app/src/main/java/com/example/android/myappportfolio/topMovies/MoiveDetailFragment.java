@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,7 @@ import com.squareup.picasso.Picasso;
  * A simple {@link Fragment} subclass.
  */
 public class MoiveDetailFragment extends Fragment {
-    private Movie movie;
-    private Uri mMovieUri;
+    private String[] movie;
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
     private TextView mReleaseDateTextView;
@@ -53,33 +53,39 @@ public class MoiveDetailFragment extends Fragment {
         //movie = getActivity().getIntent().getParcelableExtra(MovieListFragment.MOVIE_EXTRA);
         Intent intent = getActivity().getIntent();
         if (intent != null){
-            mMovieUri = intent.getData();
+            String[] movie = intent.getStringArrayExtra(MovieListFragment.INTENT_MOVIE);
+            Picasso.with(getActivity())
+                        .load(movie[0])
+                        .placeholder(R.drawable.ic_sync_black_24dp)
+                        .into(mMoiveImageView);
+
+            mMovieTitleTextView.setText(movie[1]);
+            mReleaseDateTextView.setText(movie[2]);
+            mVoteAverageTextView.setText(movie[3]);
+            mOverViewTextView.setText(movie[4]);
 
         }
 
-        if(mMovieUri != null){
-            Cursor cursor = getActivity().getContentResolver().query(mMovieUri,MovieListFragment.MOVIE_COLUMNS,
-                    null,
-                    null,
-                    null,
-                    null
-                    );
-            String imageUrl = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL));
-//            mMovieTitleTextView.setText(movie.getTitle());
-            Picasso.with(getActivity())
-                    .load(imageUrl)
-                    .placeholder(R.drawable.ic_sync_black_24dp)
-                    .into(mMoiveImageView);
-//            mReleaseDateTextView.setText(movie.getRelease_date());
-//            mVoteAverageTextView.setText(movie.getVote());
-//            mOverViewTextView.setText(movie.getOverview());
+
+
+//            Log.e("TEST" , "" + cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL)));
+//            if(cursor != null && cursor.moveToFirst()) {
+//                String imageUrl = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL));
+//                Picasso.with(getActivity())
+//                        .load(imageUrl)
+//                        .placeholder(R.drawable.ic_sync_black_24dp)
+//                        .into(mMoiveImageView);
+//            }
+
+
+        return rootView;
         }
        ;
 
 
 
-        return rootView;
+
 
     }
 
-}
+

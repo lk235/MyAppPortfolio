@@ -62,6 +62,7 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
  */
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int MOVIE_LOADER = 0;
+    public static final String INTENT_MOVIE = "intent movie";
 
     public static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
@@ -147,7 +148,17 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if(cursor != null){
                     Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-                    intent.setData(MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID)));
+
+
+                    String [] movie = new String[]{
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVER_VIEW))
+                    };
+                    intent.putExtra(INTENT_MOVIE, movie);
+
 
                     startActivity(intent);
                 }
