@@ -28,6 +28,7 @@ public class MovieContract {
                 ContentResolver.ANY_CURSOR_ITEM_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
 
         public static final String TABLE_NAME = "movie";
+        public static final String COLUMN_ID = "_id";
         public static final String COLUMN_CATEGROY_SETTING = "categroy_setting";
         public static final String COLUMN_IMAGE_URL = "imageUrl";
         public static final String COLUMN_TITLE = "title";
@@ -39,6 +40,10 @@ public class MovieContract {
 
         public static Uri buildMovieByCategory(String category){
             return CONTENT_URI.buildUpon().appendPath(category).build();
+        }
+
+        public static Uri buildMovieByID(long id){
+            return CONTENT_URI.buildUpon().appendPath(PATH_MOVIE).appendQueryParameter(COLUMN_ID, Long.toString(id)).build();
         }
 
         public static String getCategroySettingFromUri(Uri uri) {
