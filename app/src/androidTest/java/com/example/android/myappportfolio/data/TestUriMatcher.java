@@ -35,6 +35,10 @@ public class TestUriMatcher extends AndroidTestCase {
     // content://com.example.android.myappportfolio/Moive"
     private static final Uri TEST_Moive_DIR = MovieContract.MovieEntry.CONTENT_URI;
     private static final Uri TEST_Moive_BY_CATEGORY_DIR = MovieContract.MovieEntry.buildMovieByCategory(CATEGORY_QUERY);
+    private static final Uri TEST_Moive_WITH_ID_ITEM = MovieContract.MovieEntry.buildMovieUri(14);
+    //private static final Uri TEST_Moive_WITH_ID_ITEM = MovieContract.MovieEntry.buildMovieByID(4);
+   // private static final Uri TEST_Moive_WITH_ID_ITEM = Uri.parse("content://com.example.android.myappportfolio.topMovies/movie/4");
+
 
 
 
@@ -43,13 +47,15 @@ public class TestUriMatcher extends AndroidTestCase {
         for each of the Uri types that our ContentProvider can handle.  Uncomment this when you are
         ready to test your UriMatcher.
      */
-    public void testUriMatcher() {
+    public void  testUriMatcher() {
         UriMatcher testMatcher = MovieProvider.buildUriMatcher();
 
         assertEquals("Error: The Moive URI was matched incorrectly.",
                 testMatcher.match(TEST_Moive_DIR), MovieProvider.MOVIE);
-        assertEquals("Error: The Moive WITH LOCATION URI was matched incorrectly.",
+        assertEquals("Error: The Moive WITH CATEGROY URI was matched incorrectly.",
                 testMatcher.match(TEST_Moive_BY_CATEGORY_DIR), MovieProvider.MOVIE_BY_CATEGORY);
+        assertEquals("Error: The Moive WITH ID URI was matched incorrectly.",
+                testMatcher.match(TEST_Moive_WITH_ID_ITEM), MovieProvider.MOVIE_WITH_ID);
 
     }
 }

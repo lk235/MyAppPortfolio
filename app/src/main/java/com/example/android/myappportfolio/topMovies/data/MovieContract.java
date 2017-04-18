@@ -25,7 +25,7 @@ public class MovieContract {
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
 
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.ANY_CURSOR_ITEM_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
 
         public static final String TABLE_NAME = "movie";
         public static final String COLUMN_ID = "_id";
@@ -43,7 +43,7 @@ public class MovieContract {
         }
 
         public static Uri buildMovieByID(long id){
-            return CONTENT_URI.buildUpon().appendPath(PATH_MOVIE).appendQueryParameter(COLUMN_ID, Long.toString(id)).build();
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_ID, Long.toString(id)).build();
         }
 
         public static String getCategroySettingFromUri(Uri uri) {
@@ -51,7 +51,8 @@ public class MovieContract {
         }
 
         public static String getIDFromUri(Uri uri) {
-            return uri.getPathSegments().get(0);
+             ;
+            return  uri.getPathSegments().get(1);
         }
 
         public static Uri buildMovieUri(long id) {

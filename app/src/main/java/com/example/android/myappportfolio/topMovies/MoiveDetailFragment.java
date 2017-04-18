@@ -28,7 +28,6 @@ import com.squareup.picasso.Picasso;
 public class MoiveDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int DETAIL_LOADER = 0;
-    private ShareActionProvider mShareActionProvider;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
@@ -46,12 +45,13 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_VOTE = 4;
     private static final int COL_OVERVIEW = 5;
 
-    private String[] movie;
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
     private TextView mReleaseDateTextView;
     private TextView mVoteAverageTextView;
     private TextView mOverViewTextView;
+
+
 
 
     public MoiveDetailFragment() {
@@ -71,21 +71,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
         mVoteAverageTextView = (TextView) rootView.findViewById(R.id.vote_average_text_view);
         mOverViewTextView = (TextView) rootView.findViewById(R.id.overview_text_view);
 
-        //movie = getActivity().getIntent().getParcelableExtra(MovieListFragment.MOVIE_EXTRA);
-//        Intent intent = getActivity().getIntent();
-//        if (intent != null){
-//            String[] movie = intent.getStringArrayExtra(MovieListFragment.INTENT_MOVIE);
-//            Picasso.with(getActivity())
-//                        .load(movie[0])
-//                        .placeholder(R.drawable.ic_sync_black_24dp)
-//                        .into(mMoiveImageView);
-//
-//            mMovieTitleTextView.setText(movie[1]);
-//            mReleaseDateTextView.setText(movie[2]);
-//            mVoteAverageTextView.setText(movie[3]);
-//            mOverViewTextView.setText(movie[4]);
-//
-//        }
+
 
 
         return rootView;
@@ -104,8 +90,11 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             return null;
         }
 
+        Log.i("INTENT URI", intent.getDataString());
+        Uri uri = Uri.parse("content://com.example.android.myappportfolio.topMovies/movie/4");
         return new CursorLoader(getActivity(),
                 intent.getData(),
+
                 MOVIE_COLUMNS,
                 null,
                 null,
@@ -117,8 +106,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
         if (!cursor.moveToFirst()){
-            Log.i("ERROR","" + cursor.getCount());
-            Log.i("ERROR", cursor.toString());
+
             return ;
         }
 
