@@ -88,8 +88,8 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public List<Movie> mMovies;
 
    // private RecyclerView mMovieListRecylerView;
+    private GridView mGridView;
     private MovieAdapter mMovieAdapter;
-
     private String mLastSortType;
 
 
@@ -99,19 +99,27 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         // Required empty public constructor
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-
-        if(getPrefSortType().equals(mLastSortType)){
-
-            checkNetworkAndFetchData();
-            mLastSortType = getPrefSortType();
-        }else{
-
-        }
-
-    }
+//    @Override
+//    public void onStart(){
+//        super.onStart();
+//
+//        if(!getPrefSortType().equals(mLastSortType)){
+//
+//            //checkNetworkAndFetchData();
+//            if(mMovieLab.isEmpty(getPrefSortType()) ){
+//
+//                checkNetworkAndFetchData();
+//                mLastSortType = getPrefSortType();
+//            }else{
+//
+//
+//            }
+//            mLastSortType = getPrefSortType();
+//        }else{
+//            updateUI(mGridView);
+//        }
+//
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,7 +135,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.fragment_movie_main, container, false);
 //        mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
 //        mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        GridView gridView = (GridView)rootView.findViewById(R.id.gridview_movie);
+        mGridView = (GridView)rootView.findViewById(R.id.gridview_movie);
         mMovieLab  = MovieLab.get(getActivity());
         //mMovies = mMovieLab.getmMovies();
 //       Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
@@ -138,17 +146,27 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 //                null);
 
         //mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
-        if(mMovieLab.isEmpty() || !getPrefSortType().equals(mLastSortType)){
+        Uri uri = MovieContract.MovieEntry.buildMovieByCategory(getPrefSortType());
+        Cursor cursor = getActivity().getContentResolver().query(uri,
+                null,
+                null,
+                null,
+                null,
+                null);
 
+        mMovieAdapter = new MovieAdapter(getActivity(), cursor, 0);
+        mGridView.setAdapter(mMovieAdapter);
+        if(mMovieLab.isEmpty(getPrefSortType()) ){
             checkNetworkAndFetchData();
             mLastSortType = getPrefSortType();
         }else{
 
-        }
-        mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
-        gridView.setAdapter(mMovieAdapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        }
+
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
@@ -167,6 +185,19 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
        // mMovieListRecylerView.setAdapter(mMovieAdapter);
        // checkNetworkAndFetchData();
         return rootView;
+    }
+
+    private void updateUI(GridView gridView) {
+        Uri uri = MovieContract.MovieEntry.buildMovieByCategory(getPrefSortType());
+        Cursor cursor = getActivity().getContentResolver().query(uri,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        mMovieAdapter = new MovieAdapter(getActivity(), cursor, 0);
+        gridView.setAdapter(mMovieAdapter);
     }
 
     @Override

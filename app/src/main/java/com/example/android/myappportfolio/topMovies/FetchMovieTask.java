@@ -132,9 +132,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         }
          //mMovieLab = MovieLab.get(mContext);
 
-        if (!mMovieLab.isEmpty()) {
-            mMovieLab.clearMovies();
-        }
+
 
         for (int i = 0; i < stringArrayList.size(); i++)
 

@@ -95,14 +95,14 @@ public class MovieLab {
         mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
     }
 
-    public void clearMovies(){
+    public void clearMovies(String categroySetting){
         //mMovies.clear();
         mContext.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                null,
-                null);
+                MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " =? ",
+                new String[] {categroySetting});
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty(String categroySetting){
 //        if(mMovies.size() > 0){
 //            return true;
 //        }else {
@@ -110,8 +110,8 @@ public class MovieLab {
 //        }
        Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                null,
-               null,
-               null,
+               MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " =? ",
+               new String[] {categroySetting},
                null,
                null);
 
