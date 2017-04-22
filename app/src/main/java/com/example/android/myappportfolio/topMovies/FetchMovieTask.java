@@ -32,6 +32,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+    private static final String COLLECT = "收藏";
     private final Context mContext;
    // private MovieAdapter mMovieAdapter;
     private MovieLab mMovieLab;
@@ -173,6 +174,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             movie.setRelease_date(stringArrayList.get(i)[2]);
             movie.setVote(VOTE + stringArrayList.get(i)[3]);
             movie.setOverview(stringArrayList.get(i)[4]);
+            movie.setColledted(COLLECT);
 
             Log.e(TAG,stringArrayList.get(i)[1] );
 

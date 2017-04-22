@@ -25,6 +25,20 @@ public class MovieProvider extends ContentProvider {
     public static final int MOVIE = 100;
     public static final int MOVIE_BY_CATEGORY = 101;
     public static final int MOVIE_WITH_ID = 102;
+    public static final int MOVIE_WITH_CATEGROY_AND_COLLECTED = 103;
+
+
+    //categroy.categroy_setting = ?
+    private static final String sCategroySettingSelection =
+            //MovieContract.MovieEntry.TABLE_NAME + "." +
+            MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " = ? ";
+
+    private static final String sID =
+            //MovieContract.MovieEntry.TABLE_NAME + "." +
+            MovieContract.MovieEntry._ID + " = ? ";
+
+    private static final String sCollected =
+            MovieContract.MovieEntry.COLUMN_COLLECTED + " =? ";
 
 
    // private static final SQLiteQueryBuilder sMovieByCATEGORYQueryBuilder = new SQLiteQueryBuilder();
@@ -36,20 +50,15 @@ public class MovieProvider extends ContentProvider {
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
 
         matcher.addURI(authority, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
+        matcher.addURI(authority, MovieContract.PATH_MOVIE + "/*/*", MOVIE_WITH_CATEGROY_AND_COLLECTED);
         matcher.addURI(authority, MovieContract.PATH_MOVIE + "/*", MOVIE_BY_CATEGORY);
+
 
         return matcher;
 
     }
 
-    //categroy.categroy_setting = ?
-    private static final String sCategroySettingSelection =
-            //MovieContract.MovieEntry.TABLE_NAME + "." +
-            MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " = ? ";
 
-    private static final String sID =
-            //MovieContract.MovieEntry.TABLE_NAME + "." +
-            MovieContract.MovieEntry._ID + " = ? ";
 
 
     private Cursor getMovieByCategroySetting(Uri uri, String[] projection) {
@@ -66,11 +75,26 @@ public class MovieProvider extends ContentProvider {
                 null,
                 null);
 
+    }
 
 
+    private Cursor getMovieWithCategroyAndCollected(Uri uri, String[] projection) {
+        String categroy = MovieContract.MovieEntry.getCategroySettingFromUri(uri);
+        String collected = MovieContract.MovieEntry.getCollectedFromUri(uri);
+        String selection = sCategroySettingSelection + " and " + sCollected;
+        String[] selectionArgs = new String[]{categroy, collected};
 
+        return mOpenHelper.getReadableDatabase().query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
 
     }
+
 
     private Cursor getMovieWithID(Uri uri, String[] projection) {
         //String cateGroySetting = MovieContract.MovieEntry.getCategroySettingFromUri(uri);
@@ -104,12 +128,16 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match){
+            case MOVIE_WITH_ID:
+                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
+            case MOVIE_WITH_CATEGROY_AND_COLLECTED:
+                return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_BY_CATEGORY:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
-            case  MOVIE_WITH_ID:
-                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
+
+
             default:
                 throw  new UnsupportedOperationException("Unknow uri" + uri);
         }
@@ -142,6 +170,10 @@ public class MovieProvider extends ContentProvider {
                 returnCusor = getMovieWithID(uri, projection);
                 break;
 
+            case MOVIE_WITH_CATEGROY_AND_COLLECTED:
+                returnCusor = getMovieWithCategroyAndCollected(uri, projection);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknow uri: " + uri);
             }
@@ -150,6 +182,7 @@ public class MovieProvider extends ContentProvider {
 
 
         }
+
 
 
     @Override
@@ -195,6 +228,7 @@ public class MovieProvider extends ContentProvider {
                 rowsDeleted = database.delete(MovieContract.MovieEntry.TABLE_NAME, sCategroySettingSelection, selectionArgs);
                 break;
 
+
             default:
                 throw new UnsupportedOperationException("Unknow uri: " + uri);
         }
@@ -212,9 +246,13 @@ public class MovieProvider extends ContentProvider {
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs){
         final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        selection = sID;
+        selectionArgs = new String[] { MovieContract.MovieEntry.getIDFromUri(uri) };
         int rowsInsert;
 
-        if(match == MOVIE || match == MOVIE_BY_CATEGORY )
+
+
+        if(match == MOVIE_WITH_ID )
             rowsInsert = database.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, selection, selectionArgs);
         else
             throw new UnsupportedOperationException("Unknow uri: " + uri );

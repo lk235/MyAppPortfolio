@@ -62,6 +62,7 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
  */
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int MOVIE_LOADER = 0;
+    private static final String MOVIE_COLLECTED = "已收藏";
 
     public static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
@@ -70,7 +71,9 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             MovieContract.MovieEntry.COLUMN_TITLE,
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
             MovieContract.MovieEntry.COLUMN_VOTE,
-            MovieContract.MovieEntry.COLUMN_OVER_VIEW
+            MovieContract.MovieEntry.COLUMN_OVER_VIEW,
+            MovieContract.MovieEntry.COLUMN_COLLECTED
+
     };
     // These indices are tied to MOVIE_COLUMNS
     public static final int COL_MOVIE_ID = 0;
@@ -80,6 +83,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public static final int COL_COLUMN_RELEASE_DATE = 4;
     public static final int COL_COLUMN_VOTE = 5;
     public static final int COL_COLUMN_OVER_VIEW = 6;
+    public static final int COL_COLUMN_COLLECTED = 7;
 
 
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";
@@ -100,29 +104,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         // Required empty public constructor
     }
 
-//    @Override
-//    public void onStart(){
-//        super.onStart();
-//
-//        if(!getPrefCateGorySetting().equals(mLastCateGorySetting)) {
-//
-//            //checkNetworkAndFetchData();
-//            mLastCateGorySetting = getPrefCateGorySetting();
-//            if (mMovieLab.isEmpty(getPrefCateGorySetting())) {
-//
-//                checkNetworkAndFetchData();
-//
-//
-//            } else {
-//
-//                updateUI(mGridView);
-//
-//            }
-//
-//
-//        }
-//
-//    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,21 +118,17 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie_main, container, false);
-//        mMovieListRecylerView = (RecyclerView) rootView.findViewById(R.id.movie_list_recycler_view);
-//        mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
         mGridView = (GridView)rootView.findViewById(R.id.gridview_movie);
         mMovieLab  = MovieLab.get(getActivity());
 
-//
+
         mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         mGridView.setAdapter(mMovieAdapter);
         Log.i("OnCreateView", "");
         mLastCateGorySetting = getPrefCateGorySetting();
         if(mMovieLab.isEmpty(getPrefCateGorySetting() )){
             checkNetworkAndFetchData();}
-
-//
-
 
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -169,23 +147,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         });
 
 
-       // mMovieListRecylerView.setAdapter(mMovieAdapter);
-       // checkNetworkAndFetchData();
         return rootView;
     }
 
-    private void updateUI(GridView gridView) {
-        Uri uri = MovieContract.MovieEntry.buildMovieByCategory(getPrefCateGorySetting());
-        Cursor cursor = getActivity().getContentResolver().query(uri,
-                null,
-                null,
-                null,
-                null,
-                null);
 
-        mMovieAdapter = new MovieAdapter(getActivity(), cursor, 0);
-        gridView.setAdapter(mMovieAdapter);
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -198,7 +163,6 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(getPrefCateGorySetting()).build();
         return  new CursorLoader(getActivity(),
                 uri,
-                //MovieContract.MovieEntry.CONTENT_URI,
                 MOVIE_COLUMNS,
                 null,
                 null,
@@ -224,17 +188,24 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.action_setting) {
-            Intent intent = new Intent(getActivity(), SettingActivity.class);
-            startActivityForResult(intent, 0);
-        }
-        if (menuItem.getItemId() == R.id.action_refresh) {
-            Log.i("REFRESH", "refresh");
-            //mMovieLab.deleteMovies(getPrefSortType());
+        switch (menuItem.getItemId()){
+            case R.id.action_setting:
+                Intent intent = new Intent(getActivity(), SettingActivity.class);
+                startActivityForResult(intent, 0);
+                break;
 
+            case R.id.action_refresh:
                 checkNetworkAndFetchData();
-            return true;
-           // updateUI(mGridView);
+                break;
+
+            case R.id.action_colletced:
+                Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(getPrefCateGorySetting())
+                        .appendPath(MOVIE_COLLECTED).build();
+                Cursor cursor = getActivity().getContentResolver().query(uri, MOVIE_COLUMNS, null, null, null);
+
+                mMovieAdapter.swapCursor(cursor);
+
+   
 
         }
 

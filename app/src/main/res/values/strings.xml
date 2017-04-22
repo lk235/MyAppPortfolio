@@ -7,8 +7,9 @@
     <string name="most_news">最新闻</string>
     <string name="graduation_project">毕业设计</string>
 
-    <string name="menu_title_setting">SETTING</string>
-    <string name="menu_title_refresh">REFRESH</string>
+    <string name="menu_title_setting">设置</string>
+    <string name="menu_title_refresh">刷新</string>
+    <string name="menu_title_collected">已收藏</string>
 
     <string name="pref_sort_default">popular</string>
     <string name="pref_sort_title">SORT BY</string>

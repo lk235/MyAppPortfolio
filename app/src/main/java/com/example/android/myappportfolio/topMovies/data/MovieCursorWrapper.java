@@ -28,6 +28,8 @@ public class MovieCursorWrapper extends CursorWrapper {
         String release_date = getString(MovieListFragment.COL_COLUMN_RELEASE_DATE);
         String vote = getString(MovieListFragment.COL_COLUMN_VOTE);
         String overview = getString(MovieListFragment.COL_COLUMN_OVER_VIEW);
+        String collected = getString(MovieListFragment.COL_COLUMN_COLLECTED);
+
 
         Movie movie = new Movie();
         movie.setCategroy(categroy);
@@ -36,6 +38,7 @@ public class MovieCursorWrapper extends CursorWrapper {
         movie.setRelease_date(release_date);
         movie.setVote(vote);
         movie.setOverview(overview);
+        movie.setColledted(collected);
 
         return movie;
     }

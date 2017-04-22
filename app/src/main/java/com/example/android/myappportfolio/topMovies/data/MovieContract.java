@@ -35,7 +35,7 @@ public class MovieContract {
         public static final String COLUMN_RELEASE_DATE = "release_date";
         public static final String COLUMN_VOTE = "vote";
         public static final String COLUMN_OVER_VIEW = "overview";
-        
+        public static final String COLUMN_COLLECTED = "collected";
 
 
 
@@ -45,8 +45,14 @@ public class MovieContract {
 
 
 
+
+
         public static String getCategroySettingFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
+        }
+
+        public static String getCollectedFromUri(Uri uri){
+            return uri.getPathSegments().get(2);
         }
 
         public static String getIDFromUri(Uri uri) {

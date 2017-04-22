@@ -22,6 +22,8 @@ public class Movie implements Parcelable {
     private String vote;
     private String overview;
 
+    private String colledted;
+
     public Movie(){
 
     }
@@ -79,6 +81,14 @@ public class Movie implements Parcelable {
 
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
+    }
+
+    public String getColledted() {
+        return colledted;
+    }
+
+    public void setColledted(String colledted) {
+        this.colledted = colledted;
     }
 
 

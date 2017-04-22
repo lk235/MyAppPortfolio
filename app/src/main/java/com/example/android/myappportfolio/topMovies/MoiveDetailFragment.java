@@ -1,6 +1,7 @@
 package com.example.android.myappportfolio.topMovies;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,7 +41,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntry.COLUMN_TITLE,
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
             MovieContract.MovieEntry.COLUMN_VOTE,
-            MovieContract.MovieEntry.COLUMN_OVER_VIEW
+            MovieContract.MovieEntry.COLUMN_OVER_VIEW,
+            MovieContract.MovieEntry.COLUMN_COLLECTED
     };
 
     private static final int COL_MOVIE_ID = 0;
@@ -49,6 +51,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_RELEASE_DATE = 3;
     private static final int COL_VOTE = 4;
     private static final int COL_OVERVIEW = 5;
+    private static final int COL_COLLECTED = 6;
 
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
@@ -111,11 +114,12 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor cursor){
         if (!cursor.moveToFirst()){
 
             return ;
         }
+
 
         Picasso.with(getActivity())
                         .load( cursor.getString(COL_IMAGE_URL))
@@ -126,9 +130,23 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             mReleaseDateTextView.setText(cursor.getString(COL_RELEASE_DATE));
             mVoteAverageTextView.setText(cursor.getString(COL_VOTE));
             mOverViewTextView.setText(cursor.getString(COL_OVERVIEW));
+            mCollectButton.setText(cursor.getString(COL_COLLECTED));
 
             mCollectButton.setOnClickListener(new View.OnClickListener() {
+                Uri uri = MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID));
 
+
+                public ContentValues getCollectValues() {
+                    ContentValues collectValues = new ContentValues();
+                    collectValues.put(MovieContract.MovieEntry.COLUMN_COLLECTED, MOVIE_COLLECT);
+                    return collectValues;
+                }
+
+                public ContentValues getCollectedValues() {
+                    ContentValues collectValues = new ContentValues();
+                    collectValues.put(MovieContract.MovieEntry.COLUMN_COLLECTED, MOVIE_COLLECTED);
+                    return collectValues;
+                }
 
                 @Override
                 public void onClick(View v) {
@@ -138,10 +156,12 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
                     switch (mCollectButton.getText().toString()){
                         case MOVIE_COLLECT :
                             mCollectButton.setText(R.string.movie_colleted);
+                            getActivity().getContentResolver().update(uri, getCollectedValues(), null, null);
                             break;
 
                         case MOVIE_COLLECTED:
                             mCollectButton.setText(R.string.movie_collect);
+                            getActivity().getContentResolver().update(uri, getCollectValues(), null, null);
                             break;
 
                         default:
