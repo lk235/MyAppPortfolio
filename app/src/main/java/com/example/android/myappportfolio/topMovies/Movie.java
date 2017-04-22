@@ -12,8 +12,6 @@ public class Movie implements Parcelable {
 
     private int id;
 
-
-
     private String categroy;
     private String imageUrl;
 

@@ -90,7 +90,8 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
    // private RecyclerView mMovieListRecylerView;
     private GridView mGridView;
     private MovieAdapter mMovieAdapter;
-    private String mLastSortType;
+    public  static String mLastCateGorySetting;
+
 
 
 
@@ -103,20 +104,22 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 //    public void onStart(){
 //        super.onStart();
 //
-//        if(!getPrefSortType().equals(mLastSortType)){
+//        if(!getPrefCateGorySetting().equals(mLastCateGorySetting)) {
 //
 //            //checkNetworkAndFetchData();
-//            if(mMovieLab.isEmpty(getPrefSortType()) ){
+//            mLastCateGorySetting = getPrefCateGorySetting();
+//            if (mMovieLab.isEmpty(getPrefCateGorySetting())) {
 //
 //                checkNetworkAndFetchData();
-//                mLastSortType = getPrefSortType();
-//            }else{
 //
+//
+//            } else {
+//
+//                updateUI(mGridView);
 //
 //            }
-//            mLastSortType = getPrefSortType();
-//        }else{
-//            updateUI(mGridView);
+//
+//
 //        }
 //
 //    }
@@ -137,33 +140,17 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 //        mMovieListRecylerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mGridView = (GridView)rootView.findViewById(R.id.gridview_movie);
         mMovieLab  = MovieLab.get(getActivity());
-        //mMovies = mMovieLab.getmMovies();
-//       Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null);
 
-        //mMovieAdapter = new MoiveAdapter(mMovieLab.getmMovies());
-        Uri uri = MovieContract.MovieEntry.buildMovieByCategory(getPrefSortType());
-        Cursor cursor = getActivity().getContentResolver().query(uri,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        mMovieAdapter = new MovieAdapter(getActivity(), cursor, 0);
+//
+        mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         mGridView.setAdapter(mMovieAdapter);
-        if(mMovieLab.isEmpty(getPrefSortType()) ){
-            checkNetworkAndFetchData();
-            mLastSortType = getPrefSortType();
-        }else{
+        Log.i("OnCreateView", "");
+        mLastCateGorySetting = getPrefCateGorySetting();
+        if(mMovieLab.isEmpty(getPrefCateGorySetting() )){
+            checkNetworkAndFetchData();}
 
+//
 
-
-        }
 
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -188,7 +175,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     private void updateUI(GridView gridView) {
-        Uri uri = MovieContract.MovieEntry.buildMovieByCategory(getPrefSortType());
+        Uri uri = MovieContract.MovieEntry.buildMovieByCategory(getPrefCateGorySetting());
         Cursor cursor = getActivity().getContentResolver().query(uri,
                 null,
                 null,
@@ -208,8 +195,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle){
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(getPrefCateGorySetting()).build();
         return  new CursorLoader(getActivity(),
-                MovieContract.MovieEntry.CONTENT_URI,
+                uri,
+                //MovieContract.MovieEntry.CONTENT_URI,
                 MOVIE_COLUMNS,
                 null,
                 null,
@@ -241,8 +230,11 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         }
         if (menuItem.getItemId() == R.id.action_refresh) {
             Log.i("REFRESH", "refresh");
+            //mMovieLab.deleteMovies(getPrefSortType());
 
                 checkNetworkAndFetchData();
+            return true;
+           // updateUI(mGridView);
 
         }
 
@@ -261,68 +253,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
-//    public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-//        private ImageView mMoiveImageView;
-//
-//        public MovieHolder(View itemView) {
-//            super(itemView);
-//            itemView.setOnClickListener(this);
-//            mMoiveImageView = (ImageView) itemView.findViewById(R.id.movie_image_item);
-//        }
-//
-//        public void bindMovieItem(Movie movieItem) {
-//            Picasso.with(getActivity())
-//                    .load(movieItem.getImageUrl())
-//                    .placeholder(R.drawable.ic_sync_black_24dp)
-//                    .error(R.drawable.ic_info_black_24dp)
-//                    .into(mMoiveImageView);
-//
-//
-//        }
-//
-//        @Override
-//        public void onClick(View view) {
-//            Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-//           // intent.putExtra(MOVIE_EXTRA, mMovieLab.getMovie(getAdapterPosition()));
-//
-//            startActivity(intent);
-//
-//
-//        }
-//    }
-//
-//    public class MoiveAdapter extends RecyclerView.Adapter<MovieHolder> {
-//        private List<Movie> mMovies;
-//
-//        public MoiveAdapter(List<Movie> movies) {
-//            mMovies = movies;
-//        }
-//
-//        public void addMovie(List<Movie> movies){
-//            mMovies = movies;
-//        }
-//
-//        @Override
-//        public MovieHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-//            LayoutInflater inflater = LayoutInflater.from(getActivity());
-//            final View view = inflater.inflate(R.layout.movie_item, viewGroup, false);
-//            return new MovieHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(MovieHolder movieHolder, int positon) {
-//            Movie movieItem = mMovies.get(positon);
-//            movieHolder.bindMovieItem(movieItem);
-//
-//
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return mMovies.size();
-//        }
-//
-//    }
+
 
     /**
      * This method get the sharedPreftrence value and call the asyncTask to get movie data.
@@ -331,12 +262,12 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
 
 
-        new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefSortType());
+        new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefCateGorySetting());
 
 
     }
 
-    private String getPrefSortType() {
+    private   String getPrefCateGorySetting() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -344,53 +275,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
             }
         });
-        String lastSortType = sharedPreferences.getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
+        String cateGroySetting = sharedPreferences.getString(getString(R.string.pref_sort_key), getString((R.string.pref_sort_default)));
 
-        return lastSortType;
+        return cateGroySetting;
     }
-
-
-
-    private ArrayList<String[]> getMovieDataFromJson(String movieJsonStr)
-            throws JSONException {
-
-        // These are the names of the JSON objects that need to be extracted.
-        final String OWM_RESULTS = "results";
-        final String OWM_POSTER_PATH = "poster_path";
-        final String OWM_OVERVIEW = "overview";
-        final String OWM_TITLE = "title";
-        final String OWM_RELEASE_DATE = "release_date";
-        final String OWM_VOTE_AVERAGE = "vote_average";
-
-        ArrayList<String[]> resultStrs = new ArrayList<>();
-
-
-        JSONObject movieJson = new JSONObject(movieJsonStr);
-        JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
-
-
-        for (int i = 0; i < movieArray.length(); i++) {
-
-            JSONObject singleMovie = movieArray.getJSONObject(i);
-
-            String[] moiveItem = new String[]{
-                    singleMovie.getString(OWM_TITLE),
-                    singleMovie.getString(OWM_POSTER_PATH),
-                    singleMovie.getString(OWM_RELEASE_DATE),
-                    singleMovie.getString(OWM_VOTE_AVERAGE),
-                    singleMovie.getString(OWM_OVERVIEW)};
-
-            resultStrs.add(moiveItem);
-
-        }
-
-        return resultStrs;
-
-    }
-
-
-
-
 
 
 
@@ -400,6 +288,28 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+
+    void onSettingChanged( ) {
+
+
+        if(mMovieLab.isEmpty(getPrefCateGorySetting())){
+            Log.i("FetchData", "");
+
+            checkNetworkAndFetchData();
+            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+        }else {
+            Log.i("RESTART LOADER", "");
+            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+
+        }
+
+
+
+
+
+
     }
 }
 

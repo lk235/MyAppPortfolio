@@ -42,9 +42,7 @@ public class MovieContract {
             return CONTENT_URI.buildUpon().appendPath(category).build();
         }
 
-        public static Uri buildMovieByID(long id){
-            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_ID, Long.toString(id)).build();
-        }
+
 
         public static String getCategroySettingFromUri(Uri uri) {
             return uri.getPathSegments().get(1);

@@ -2,7 +2,12 @@ package com.example.android.myappportfolio.topMovies;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+
+import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.data.MovieCursorWrapper;
 
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
@@ -37,8 +42,9 @@ public class MovieLab {
     }
 
     private static ContentValues getContentValues(Movie movie){
+
         ContentValues values = new ContentValues();
-        values.put(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING, "TEST");
+        values.put(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING, movie.getCategroy());
         values.put(MovieContract.MovieEntry.COLUMN_IMAGE_URL, movie.getImageUrl());
         values.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
         values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
@@ -73,15 +79,23 @@ public class MovieLab {
         return movies;
     }
 
-    public Movie getMovie( String title){
+    public Boolean isMovieExist( String categroySetting){
 
         //return mMovies.get(id);
-        Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(categroySetting).build();
+        Cursor cursor = mContext.getContentResolver().query(
+                uri,
                 null,
-            MovieContract.MovieEntry.COLUMN_TITLE + " =? ",
-                new String[]{title},
                 null,
-                null);
+                new String[]{categroySetting},
+                null,
+                null
+        );
+
+
+        if(cursor.moveToFirst()){
+            return true;
+        }
 
 
 
@@ -95,11 +109,20 @@ public class MovieLab {
         mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
     }
 
-    public void clearMovies(String categroySetting){
+    public void deleteMovies(String categroySetting){
         //mMovies.clear();
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(categroySetting).build();
+        mContext.getContentResolver().delete(uri,
+                null,
+                null);
+    }
+
+    public void clearAllMovies(){
+        //mMovies.clear();
+
         mContext.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " =? ",
-                new String[] {categroySetting});
+                null,
+                null);
     }
 
     public boolean isEmpty(String categroySetting){
@@ -121,6 +144,8 @@ public class MovieLab {
             return false;
         }
     }
+
+
 
 
 }

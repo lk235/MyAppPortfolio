@@ -10,6 +10,8 @@ import android.net.Uri;
 
 import com.example.android.myappportfolio.topMovies.Movie;
 
+import java.net.URI;
+
 /**
  * Created by lk235 on 2017/4/10.
  */
@@ -50,7 +52,7 @@ public class MovieProvider extends ContentProvider {
             MovieContract.MovieEntry._ID + " = ? ";
 
 
-    private Cursor getMovieByCategroySetting(Uri uri, String[] projection, String sortOrder) {
+    private Cursor getMovieByCategroySetting(Uri uri, String[] projection) {
         String cateGroySetting = MovieContract.MovieEntry.getCategroySettingFromUri(uri);
         String selection = sCategroySettingSelection;
         String[] selectionArgs = new String[]{cateGroySetting};
@@ -62,7 +64,7 @@ public class MovieProvider extends ContentProvider {
                 selectionArgs,
                 null,
                 null,
-                sortOrder);
+                null);
 
 
 
@@ -133,7 +135,7 @@ public class MovieProvider extends ContentProvider {
                 break;
 
             case MOVIE_BY_CATEGORY:
-                returnCusor = getMovieByCategroySetting(uri, projection, sortOrder);
+                returnCusor = getMovieByCategroySetting(uri, projection);
                 break;
 
             case MOVIE_WITH_ID:
@@ -174,23 +176,37 @@ public class MovieProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs){
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
 
-        if(selection == null) selection = "1";
+        if (selection == null) selection = "1";
 
-        if (match == MOVIE){
-            rowsDeleted = database.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
-        }else
-            throw new UnsupportedOperationException("Unknow uri: " + uri);
+        switch (match) {
+            case MOVIE:
 
-        if(rowsDeleted != 0)
-            getContext().getContentResolver().notifyChange(uri, null);
+                rowsDeleted = database.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
 
-        return rowsDeleted;
-    }
+             case MOVIE_BY_CATEGORY:
+
+                selectionArgs = new String[]{MovieContract.MovieEntry.getCategroySettingFromUri(uri)};
+                rowsDeleted = database.delete(MovieContract.MovieEntry.TABLE_NAME, sCategroySettingSelection, selectionArgs);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unknow uri: " + uri);
+        }
+
+
+                if (rowsDeleted != 0){
+                    getContext().getContentResolver().notifyChange(uri, null);}
+
+                return rowsDeleted;
+        }
+
+
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs){
@@ -198,7 +214,7 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsInsert;
 
-        if(match == MOVIE)
+        if(match == MOVIE || match == MOVIE_BY_CATEGORY )
             rowsInsert = database.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, selection, selectionArgs);
         else
             throw new UnsupportedOperationException("Unknow uri: " + uri );

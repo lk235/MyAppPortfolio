@@ -1,9 +1,15 @@
 package com.example.android.myappportfolio.topMovies;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.example.android.myappportfolio.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +35,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
     private final Context mContext;
    // private MovieAdapter mMovieAdapter;
     private MovieLab mMovieLab;
+    private String mCategroySetting ;
 
     private final String TAG = "FetchMovieData";
     private final String MOVIE_URL = "http://api.themoviedb.org/3/movie";
@@ -47,6 +54,20 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         mMovieLab = movieLab;
 
     }
+
+//    @Override
+//    protected void onPreExecute() {
+//        super.onPreExecute();
+//        //get sharedPreferences here
+//
+//
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+//
+//        String key = Resources.getSystem().getString(R.string.pref_sort_key);
+//        String value = Resources.getSystem().getString(R.string.pref_sort_default);
+//        mCategroySetting = sharedPreferences.getString(key, value);
+//
+//    }
 
 
 
@@ -134,10 +155,19 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
 
 
+
+
+        mCategroySetting = MainActivity.mLastCateGroySetting;
+
+                mMovieLab.deleteMovies(mCategroySetting);
+
+
+
         for (int i = 0; i < stringArrayList.size(); i++)
 
         {
             Movie movie = new Movie();
+            movie.setCategroy(mCategroySetting);
             movie.setTitle(stringArrayList.get(i)[0]);
             movie.setImageUrl(IMAGE_URL + stringArrayList.get(i)[1]);
             movie.setRelease_date(stringArrayList.get(i)[2]);
@@ -206,4 +236,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         return resultStrs;
 
     }
+
+
 }

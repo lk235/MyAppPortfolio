@@ -73,6 +73,29 @@ public class TestProvider extends AndroidTestCase {
 
     }
 
+    public void deleteSomeRecordsFromProvider() {
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath("polular").build();
+
+        mContext.getContentResolver().delete(
+                uri,
+                null,
+                null
+        );
+
+
+        Cursor cursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+        assertEquals("Error: Records not deleted from Movie table during delete", 0, cursor.getCount());
+        cursor.close();
+
+
+    }
+
     public void deleteAllRecords() {
         deleteAllRecordsFromProvider();
     }
@@ -325,6 +348,7 @@ public class TestProvider extends AndroidTestCase {
         mContext.getContentResolver().registerContentObserver(MovieContract.MovieEntry.CONTENT_URI, true, MovieObserver);
 
         deleteAllRecordsFromProvider();
+        deleteSomeRecordsFromProvider();
 
         // Students: If either of these fail, you most-likely are not calling the
         // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
