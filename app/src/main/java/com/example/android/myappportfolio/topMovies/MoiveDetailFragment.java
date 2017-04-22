@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,10 @@ import com.squareup.picasso.Picasso;
 public class MoiveDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int DETAIL_LOADER = 0;
+    private static  final String MOVIE_COLLECT = "收藏";
+    private static final String MOVIE_COLLECTED = "已收藏";
+
+
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
@@ -50,6 +55,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mReleaseDateTextView;
     private TextView mVoteAverageTextView;
     private TextView mOverViewTextView;
+    private Button mCollectButton;
 
 
 
@@ -70,6 +76,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
         mReleaseDateTextView = (TextView) rootView.findViewById(R.id.release_date_text_view);
         mVoteAverageTextView = (TextView) rootView.findViewById(R.id.vote_average_text_view);
         mOverViewTextView = (TextView) rootView.findViewById(R.id.overview_text_view);
+        mCollectButton = (Button) rootView.findViewById(R.id.movie_collect_button);
 
 
 
@@ -119,6 +126,30 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             mReleaseDateTextView.setText(cursor.getString(COL_RELEASE_DATE));
             mVoteAverageTextView.setText(cursor.getString(COL_VOTE));
             mOverViewTextView.setText(cursor.getString(COL_OVERVIEW));
+
+            mCollectButton.setOnClickListener(new View.OnClickListener() {
+
+
+                @Override
+                public void onClick(View v) {
+                    Log.i("button clicked", "" + mCollectButton.getText());
+                    Log.i("getText" , getString(R.string.movie_collect));
+
+                    switch (mCollectButton.getText().toString()){
+                        case MOVIE_COLLECT :
+                            mCollectButton.setText(R.string.movie_colleted);
+                            break;
+
+                        case MOVIE_COLLECTED:
+                            mCollectButton.setText(R.string.movie_collect);
+                            break;
+
+                        default:
+
+                    }
+
+                }
+            });
 
 
 

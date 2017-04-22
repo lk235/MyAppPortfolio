@@ -14,6 +14,9 @@
     <string name="pref_sort_title">SORT BY</string>
     <string name="pref_sort_key">Sort Type</string>
 
+    <string name="movie_collect">收藏</string>
+    <string name="movie_colleted">已收藏</string>
+
 
     <string-array name="sort_type">
         <item>Popular Movies</item>
