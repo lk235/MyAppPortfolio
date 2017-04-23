@@ -205,7 +205,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
                 mMovieAdapter.swapCursor(cursor);
 
-   
+
 
         }
 
