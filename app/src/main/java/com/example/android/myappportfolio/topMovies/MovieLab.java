@@ -50,6 +50,7 @@ public class MovieLab {
         values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
         values.put(MovieContract.MovieEntry.COLUMN_VOTE, movie.getVote());
         values.put(MovieContract.MovieEntry.COLUMN_OVER_VIEW, movie.getOverview());
+        values.put(MovieContract.MovieEntry.COLUMN_RUNTIME, movie.getRuntime());
         values.put(MovieContract.MovieEntry.COLUMN_COLLECTED, movie.getColledted());
 
         return values;

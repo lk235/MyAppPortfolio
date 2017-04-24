@@ -30,6 +30,7 @@ public class MovieDBHelper extends SQLiteOpenHelper{
                 MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_VOTE + " REAL NOT NULL, " +
                 MovieEntry.COLUMN_OVER_VIEW + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_RUNTIME + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_COLLECTED + " TEXT NOT NULL " +
                 " );";
 

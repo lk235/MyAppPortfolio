@@ -3,6 +3,8 @@ package com.example.android.myappportfolio.topMovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.sql.Time;
+
 /**
  * Created by lk235 on 2017/3/14.
  */
@@ -11,6 +13,10 @@ public class Movie implements Parcelable {
 
 
     private int id;
+
+
+
+    private String runtime;
 
     private String categroy;
     private String imageUrl;
@@ -81,6 +87,14 @@ public class Movie implements Parcelable {
 
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
+    }
+
+    public String getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
     }
 
     public String getColledted() {

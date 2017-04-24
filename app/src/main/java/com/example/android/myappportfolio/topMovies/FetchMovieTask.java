@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.text.format.Time;
 import android.util.Log;
 
 import com.example.android.myappportfolio.R;
@@ -163,7 +164,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
                 mMovieLab.deleteMovies(mCategroySetting);
 
 
-
+        String movieId;
         for (int i = 0; i < stringArrayList.size(); i++)
 
         {
@@ -175,11 +176,9 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             movie.setVote(VOTE + stringArrayList.get(i)[3]);
             movie.setOverview(stringArrayList.get(i)[4]);
             movie.setColledted(COLLECT);
-            movie.setId(Integer.parseInt(stringArrayList.get(i)[5]));
-            Uri movieItemUri = Uri.parse(MOVIE_URL).buildUpon()
-                    .appendPath(stringArrayList.get(i)[5])
-                    .appendQueryParameter(API_KEY, apiKey)
-                    .build();
+            movieId = stringArrayList.get(i)[5];
+            movie.setRuntime(getJsonDataFromUri(movieId));
+
 
 
             Log.e(TAG,stringArrayList.get(i)[1] );
@@ -188,7 +187,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
 
         }
-      
+
 
 
 
@@ -239,18 +238,19 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     }
 
-    private void test(Uri uri){
+    private String getJsonDataFromUri (String movieId){
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        ArrayList<String[]> stringArrayList = null;
+        String movieRunTime = null;
+
         try
 
         {
-//            Uri uri = Uri.parse(MOVIE_URL).buildUpon()
-//                    .appendPath(queryType[0])
-//                    .appendQueryParameter(LANGUAGE, language)
-//                    .appendQueryParameter(API_KEY, apiKey)
-//                    .build();
+            Uri uri = Uri.parse(MOVIE_URL).buildUpon()
+                    .appendPath(movieId)
+                    .appendQueryParameter(API_KEY, apiKey)
+                    .build();
 
             URL url = new URL(uri.toString());
             Log.i(TAG, url + "");
@@ -309,6 +309,27 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             }
 
         }
+
+        final String OWM_RUNTIME = "runtime";
+
+        try
+
+        {
+            JSONObject jsonString = new JSONObject(movieJsonStr);
+            int runtime = jsonString.getInt(OWM_RUNTIME);
+            int runHour = runtime / 60 ;
+            int runMin = runtime % 60;
+            movieRunTime = "RUNTIME: " +  runHour + " h " + runMin + " m";
+         
+
+        } catch (JSONException js) {
+            Log.e(TAG, "JSON ERROR");
+        }
+
+
+
+        return movieRunTime;
+
     }
 
 

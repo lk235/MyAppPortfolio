@@ -42,6 +42,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
             MovieContract.MovieEntry.COLUMN_VOTE,
             MovieContract.MovieEntry.COLUMN_OVER_VIEW,
+            MovieContract.MovieEntry.COLUMN_RUNTIME,
             MovieContract.MovieEntry.COLUMN_COLLECTED
     };
 
@@ -51,13 +52,15 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_RELEASE_DATE = 3;
     private static final int COL_VOTE = 4;
     private static final int COL_OVERVIEW = 5;
-    private static final int COL_COLLECTED = 6;
+    private static final int COL_RUNTIME = 6;
+    private static final int COL_COLLECTED = 7;
 
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
     private TextView mReleaseDateTextView;
     private TextView mVoteAverageTextView;
     private TextView mOverViewTextView;
+    private TextView mRunTimeTextView;
     private Button mCollectButton;
 
 
@@ -79,6 +82,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
         mReleaseDateTextView = (TextView) rootView.findViewById(R.id.release_date_text_view);
         mVoteAverageTextView = (TextView) rootView.findViewById(R.id.vote_average_text_view);
         mOverViewTextView = (TextView) rootView.findViewById(R.id.overview_text_view);
+        mRunTimeTextView = (TextView) rootView.findViewById(R.id.runtime_text_view) ;
         mCollectButton = (Button) rootView.findViewById(R.id.movie_collect_button);
 
 
@@ -130,6 +134,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             mReleaseDateTextView.setText(cursor.getString(COL_RELEASE_DATE));
             mVoteAverageTextView.setText(cursor.getString(COL_VOTE));
             mOverViewTextView.setText(cursor.getString(COL_OVERVIEW));
+            mRunTimeTextView.setText(cursor.getString(COL_RUNTIME));
             mCollectButton.setText(cursor.getString(COL_COLLECTED));
 
             mCollectButton.setOnClickListener(new View.OnClickListener() {
