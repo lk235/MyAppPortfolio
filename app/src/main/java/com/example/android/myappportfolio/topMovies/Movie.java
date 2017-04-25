@@ -16,7 +16,7 @@ public class Movie implements Parcelable {
 
 
 
-    private String runtime;
+
 
     private String categroy;
     private String imageUrl;
@@ -27,6 +27,10 @@ public class Movie implements Parcelable {
 
     private String vote;
     private String overview;
+    private String runtime;
+
+
+    private String trailer;
 
     private String colledted;
 
@@ -95,6 +99,14 @@ public class Movie implements Parcelable {
 
     public void setRuntime(String runtime) {
         this.runtime = runtime;
+    }
+
+    public String getTrailer() {
+        return trailer;
+    }
+
+    public void setTrailer(String trailer) {
+        this.trailer = trailer;
     }
 
     public String getColledted() {

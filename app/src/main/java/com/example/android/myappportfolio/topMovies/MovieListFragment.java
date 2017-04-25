@@ -73,6 +73,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             MovieContract.MovieEntry.COLUMN_VOTE,
             MovieContract.MovieEntry.COLUMN_OVER_VIEW,
             MovieContract.MovieEntry.COLUMN_RUNTIME,
+            MovieContract.MovieEntry.COLUMN_TRAILER,
             MovieContract.MovieEntry.COLUMN_COLLECTED
 
     };
@@ -85,7 +86,8 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public static final int COL_COLUMN_VOTE = 5;
     public static final int COL_COLUMN_OVER_VIEW = 6;
     public static final int COL_COLUMN_RUNTIME = 7;
-    public static final int COL_COLUMN_COLLECTED = 8;
+    public static final int COL_COLUMN_TRAILER = 8;
+    public static final int COL_COLUMN_COLLECTED = 9;
 
 
     public static final String NETWORK_NOT_CONNECTED = "network is not connted!";

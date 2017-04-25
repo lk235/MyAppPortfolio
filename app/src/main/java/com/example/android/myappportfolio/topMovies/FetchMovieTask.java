@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Array;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -34,6 +35,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private static final String COLLECT = "收藏";
+    private static final String strSeparator = ",";
     private final Context mContext;
    // private MovieAdapter mMovieAdapter;
     private MovieLab mMovieLab;
@@ -74,76 +76,16 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
 
     protected MovieLab doInBackground(String... queryType) {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
+
         ArrayList<String[]> stringArrayList = null;
 
-        try
+        Uri uri = Uri.parse(MOVIE_URL).buildUpon()
+                .appendPath(queryType[0])
+                .appendQueryParameter(LANGUAGE, language)
+                .appendQueryParameter(API_KEY, apiKey)
+                .build();
 
-        {
-            Uri uri = Uri.parse(MOVIE_URL).buildUpon()
-                    .appendPath(queryType[0])
-                    .appendQueryParameter(LANGUAGE, language)
-                    .appendQueryParameter(API_KEY, apiKey)
-                    .build();
-
-            URL url = new URL(uri.toString());
-            Log.i(TAG, url + "");
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setConnectTimeout(5000);
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            int responseCode = urlConnection.getResponseCode();
-            Log.i(TAG, "code= " + responseCode);
-            if (responseCode != HttpsURLConnection.HTTP_OK) {
-                throw new IOException("HTTP error code: " + responseCode);
-            }
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer stringBuffer = new StringBuffer();
-
-            if (inputStream == null) {
-
-                movieJsonStr = null;
-            }
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-
-                stringBuffer.append(line + "\n");
-            }
-
-            if (stringBuffer.length() == 0) {
-
-                movieJsonStr = null;
-            }
-            movieJsonStr = stringBuffer.toString();
-
-        } catch (
-                IOException ioe)
-
-        {
-            movieJsonStr = null;
-            Log.i(TAG, "" + ioe);
-        } finally
-
-        {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(TAG, "Error closing stream", e);
-                }
-            }
-
-        }
+        getDataFromHttp(uri);
 
 
         try
@@ -153,11 +95,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         } catch (JSONException js) {
             Log.e(TAG, "JSON ERROR");
         }
-         //mMovieLab = MovieLab.get(mContext);
-
-
-
-
 
         mCategroySetting = MainActivity.mLastCateGroySetting;
 
@@ -177,7 +114,8 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             movie.setOverview(stringArrayList.get(i)[4]);
             movie.setColledted(COLLECT);
             movieId = stringArrayList.get(i)[5];
-            movie.setRuntime(getJsonDataFromUri(movieId));
+            movie.setRuntime(getRunTimeFromUri(movieId));
+            movie.setTrailer(getTrailerFromUri(movieId));
 
 
 
@@ -238,19 +176,94 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     }
 
-    private String getJsonDataFromUri (String movieId){
+    private String getRunTimeFromUri (String movieId){
 
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
+
         String movieRunTime = null;
+        Uri uri = Uri.parse(MOVIE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendQueryParameter(API_KEY, apiKey)
+                .build();
+
+        getDataFromHttp(uri);
+
+        final String OWM_RUNTIME = "runtime";
 
         try
 
         {
-            Uri uri = Uri.parse(MOVIE_URL).buildUpon()
-                    .appendPath(movieId)
-                    .appendQueryParameter(API_KEY, apiKey)
-                    .build();
+            JSONObject jsonString = new JSONObject(movieJsonStr);
+            int runtime = jsonString.getInt(OWM_RUNTIME);
+            int runHour = runtime / 60 ;
+            int runMin = runtime % 60;
+            movieRunTime = "RUNTIME: " +  runHour + " h " + runMin + " m";
+
+
+        } catch (JSONException js) {
+            Log.e(TAG, "JSON ERROR");
+        }
+
+
+
+        return movieRunTime;
+
+    }
+
+
+    private String getTrailerFromUri (String movieId){
+        final String VIDEOS = "videos";
+        final String YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+
+
+        String[] movieTrailers = null;
+        Uri uri = Uri.parse(MOVIE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath(VIDEOS)
+                .appendQueryParameter(API_KEY, apiKey)
+                .build();
+
+        getDataFromHttp(uri);
+
+        final String OWM_TRAILER = "TRAILER";
+        final String OWM_RESULTS = "results";
+        final String OWM_KEY = "key";
+
+        try
+
+        {
+            JSONObject jsonString = new JSONObject(movieJsonStr);
+            JSONArray jsonArray = jsonString.getJSONArray(OWM_RESULTS);
+            movieTrailers = new String[jsonArray.length()];
+            String retrunStr;
+            for (int i = 0; i < jsonArray.length(); i++ ){
+
+                retrunStr = YOUTUBE_URL + jsonArray.getJSONObject(i).getString(OWM_KEY);
+                movieTrailers[i] = retrunStr;
+
+            }
+
+
+        } catch (JSONException js) {
+            Log.e(TAG, "JSON ERROR");
+        }
+
+        Log.i("TRAILER",convertArrayToString(movieTrailers) );
+
+        return  convertArrayToString(movieTrailers);
+
+
+
+    }
+
+    private void getDataFromHttp( Uri uri) {
+
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+
+        try
+
+        {
+
 
             URL url = new URL(uri.toString());
             Log.i(TAG, url + "");
@@ -309,28 +322,23 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             }
 
         }
-
-        final String OWM_RUNTIME = "runtime";
-
-        try
-
-        {
-            JSONObject jsonString = new JSONObject(movieJsonStr);
-            int runtime = jsonString.getInt(OWM_RUNTIME);
-            int runHour = runtime / 60 ;
-            int runMin = runtime % 60;
-            movieRunTime = "RUNTIME: " +  runHour + " h " + runMin + " m";
-         
-
-        } catch (JSONException js) {
-            Log.e(TAG, "JSON ERROR");
-        }
-
-
-
-        return movieRunTime;
-
     }
 
+    public static String convertArrayToString(String[] array){
+
+
+        String str = "";
+        for (int i = 0; i<array.length; i++) {
+            str = str+array[i];
+            if(i<array.length-1){
+                str = str+strSeparator;
+            }
+        }
+        return str;
+    }
+    public static String[] convertStringToArray(String str){
+        String[] arr = str.split(strSeparator);
+        return arr;
+    }
 
 }

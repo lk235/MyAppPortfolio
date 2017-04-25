@@ -15,8 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.myappportfolio.R;
@@ -43,6 +46,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntry.COLUMN_VOTE,
             MovieContract.MovieEntry.COLUMN_OVER_VIEW,
             MovieContract.MovieEntry.COLUMN_RUNTIME,
+            MovieContract.MovieEntry.COLUMN_TRAILER,
             MovieContract.MovieEntry.COLUMN_COLLECTED
     };
 
@@ -53,7 +57,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_VOTE = 4;
     private static final int COL_OVERVIEW = 5;
     private static final int COL_RUNTIME = 6;
-    private static final int COL_COLLECTED = 7;
+    private static final int COL_TRAILER= 7;
+    private static final int COL_COLLECTED = 8;
 
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
@@ -62,6 +67,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mOverViewTextView;
     private TextView mRunTimeTextView;
     private Button mCollectButton;
+    private ListView mTrailerListView;
 
 
 
@@ -84,6 +90,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
         mOverViewTextView = (TextView) rootView.findViewById(R.id.overview_text_view);
         mRunTimeTextView = (TextView) rootView.findViewById(R.id.runtime_text_view) ;
         mCollectButton = (Button) rootView.findViewById(R.id.movie_collect_button);
+        mTrailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
 
 
 
@@ -104,8 +111,6 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             return null;
         }
 
-        Log.i("INTENT URI", intent.getDataString());
-        Uri uri = Uri.parse("content://com.example.android.myappportfolio.topMovies/movie/4");
         return new CursorLoader(getActivity(),
                 intent.getData(),
 
@@ -176,6 +181,28 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
                 }
             });
 
+       ;
+
+        final String[] trailerData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER));
+        for(int i= 0; i< trailerData.length; i++){
+            Log.i("trailerData", trailerData[i]);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1,
+                trailerData);
+
+        mTrailerListView.setAdapter(adapter);
+
+        mTrailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerData[position]) );
+                    startActivity(intent);
+
+            }
+        });
+
 
 
     }
@@ -184,6 +211,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader){
 
     }
+
+
 
 
 }
