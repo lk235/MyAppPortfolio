@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,7 +47,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntry.COLUMN_VOTE,
             MovieContract.MovieEntry.COLUMN_OVER_VIEW,
             MovieContract.MovieEntry.COLUMN_RUNTIME,
-            MovieContract.MovieEntry.COLUMN_TRAILER,
+            MovieContract.MovieEntry.COLUMN_TRAILER_NAME,
+            MovieContract.MovieEntry.COLUMN_TRAILER_URL,
             MovieContract.MovieEntry.COLUMN_COLLECTED
     };
 
@@ -57,8 +59,9 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_VOTE = 4;
     private static final int COL_OVERVIEW = 5;
     private static final int COL_RUNTIME = 6;
-    private static final int COL_TRAILER= 7;
-    private static final int COL_COLLECTED = 8;
+    private static final int COL_TRAILER_NAME= 7;
+    private static final int COL_TRAILER_URL= 8;
+    private static final int COL_COLLECTED = 9;
 
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
@@ -182,22 +185,30 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             });
 
        ;
+        final String[] trailerNameData = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
+        final String[] trailerUrlData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_URL));
 
-        final String[] trailerData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER));
-        for(int i= 0; i< trailerData.length; i++){
-            Log.i("trailerData", trailerData[i]);
-        }
+
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1,
-                trailerData);
+                trailerNameData);
 
         mTrailerListView.setAdapter(adapter);
+        ListAdapter listAdapter = mTrailerListView.getAdapter();
+        int rows = listAdapter.getCount();
+        int height = 150 * rows;
+
+        ViewGroup.LayoutParams params = mTrailerListView.getLayoutParams();
+        params.height = height;
+        mTrailerListView.setLayoutParams(params);
+        mTrailerListView.requestLayout();
 
         mTrailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerData[position]) );
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrlData[position]) );
                     startActivity(intent);
 
             }

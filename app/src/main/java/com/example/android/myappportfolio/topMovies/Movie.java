@@ -30,7 +30,13 @@ public class Movie implements Parcelable {
     private String runtime;
 
 
-    private String trailer;
+
+
+    private String trailerName;
+
+
+
+    private String trailerUrl;
 
     private String colledted;
 
@@ -101,13 +107,22 @@ public class Movie implements Parcelable {
         this.runtime = runtime;
     }
 
-    public String getTrailer() {
-        return trailer;
+    public String getTrailerName() {
+        return trailerName;
     }
 
-    public void setTrailer(String trailer) {
-        this.trailer = trailer;
+    public void setTrailerName(String trailerName) {
+        this.trailerName = trailerName;
     }
+
+    public String getTrailerUrl() {
+        return trailerUrl;
+    }
+
+    public void setTrailerUrl(String trailerUrl) {
+        this.trailerUrl = trailerUrl;
+    }
+
 
     public String getColledted() {
         return colledted;

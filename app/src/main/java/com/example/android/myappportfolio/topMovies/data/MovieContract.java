@@ -36,7 +36,8 @@ public class MovieContract {
         public static final String COLUMN_VOTE = "vote";
         public static final String COLUMN_OVER_VIEW = "overview";
         public static final String COLUMN_RUNTIME = "runtime";
-        public static final String COLUMN_TRAILER = "trailer";
+        public static final String COLUMN_TRAILER_NAME = "trailer_name";
+        public static final String COLUMN_TRAILER_URL = "trailer_url";
         public static final String COLUMN_COLLECTED = "collected";
 
 

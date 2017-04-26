@@ -115,7 +115,19 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             movie.setColledted(COLLECT);
             movieId = stringArrayList.get(i)[5];
             movie.setRuntime(getRunTimeFromUri(movieId));
-            movie.setTrailer(getTrailerFromUri(movieId));
+            ArrayList<String[]> retTrailer = getTrailerFromUri(movieId);
+            String [] nameStr = new String[retTrailer.size()];
+            String [] urlStr = new String[retTrailer.size()];
+           for(int j =0; j < retTrailer.size(); j++){
+               nameStr[j] = retTrailer.get(j)[0];
+               Log.i("nameStr", nameStr[j]);
+               Log.i("HERE2","HERE2");
+               urlStr[j] = retTrailer.get(j)[1];
+
+
+           }
+           movie.setTrailerName(convertArrayToString(nameStr));
+            movie.setTrailerUrl(convertArrayToString(urlStr));
 
 
 
@@ -210,12 +222,14 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
     }
 
 
-    private String getTrailerFromUri (String movieId){
+    private ArrayList<String[]> getTrailerFromUri (String movieId){
         final String VIDEOS = "videos";
         final String YOUTUBE_URL = "https://www.youtube.com/watch?v=";
 
 
-        String[] movieTrailers = null;
+        ArrayList<String[]> movieTrailers = new ArrayList<>();
+        String trailerNmae;
+        String trailerUrl;
         Uri uri = Uri.parse(MOVIE_URL).buildUpon()
                 .appendPath(movieId)
                 .appendPath(VIDEOS)
@@ -224,7 +238,8 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
         getDataFromHttp(uri);
 
-        final String OWM_TRAILER = "TRAILER";
+
+        final String OWM_NAME = "name";
         final String OWM_RESULTS = "results";
         final String OWM_KEY = "key";
 
@@ -233,23 +248,32 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         {
             JSONObject jsonString = new JSONObject(movieJsonStr);
             JSONArray jsonArray = jsonString.getJSONArray(OWM_RESULTS);
-            movieTrailers = new String[jsonArray.length()];
-            String retrunStr;
+            Log.i("HERE","HERE");
+
+
             for (int i = 0; i < jsonArray.length(); i++ ){
 
-                retrunStr = YOUTUBE_URL + jsonArray.getJSONObject(i).getString(OWM_KEY);
-                movieTrailers[i] = retrunStr;
+                trailerNmae = jsonArray.getJSONObject(i).getString(OWM_NAME);
+
+                trailerUrl = YOUTUBE_URL + jsonArray.getJSONObject(i).getString(OWM_KEY);
+                movieTrailers.add(new String[] {trailerNmae, trailerUrl});
+
+
+
 
             }
+
 
 
         } catch (JSONException js) {
             Log.e(TAG, "JSON ERROR");
         }
 
-        Log.i("TRAILER",convertArrayToString(movieTrailers) );
 
-        return  convertArrayToString(movieTrailers);
+
+
+       Log.i("TRAILER", movieTrailers.get(0)[0]);
+        return  movieTrailers;
 
 
 
