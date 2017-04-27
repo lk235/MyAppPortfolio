@@ -33,6 +33,9 @@ public class MovieDBHelper extends SQLiteOpenHelper{
                 MovieEntry.COLUMN_RUNTIME + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_TRAILER_NAME + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_TRAILER_URL + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_REVIEW_AUTHOR + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_REVIEW_CONTENT + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_REVIEW_URL + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_COLLECTED + " TEXT NOT NULL " +
                 " );";
 

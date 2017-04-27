@@ -39,13 +39,7 @@
                 android:layout_gravity="center_vertical"
                 >
 
-                <Button
-                    android:id="@+id/movie_collect_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/movie_collect"
-                    android:textColor="@android:color/holo_purple"/>
+
 
                 <TextView
                     android:id="@+id/release_date_text_view"
@@ -70,6 +64,30 @@
                     android:layout_gravity="center"
                     tools:text="@string/hello_blank_fragment"/>
 
+                <Button
+                    android:id="@+id/movie_collect_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/movie_collect"
+                    android:textColor="@android:color/holo_purple"/>
+
+                <Button
+                    android:id="@+id/movie_trailer_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/movie_trailer"
+                    android:textColor="@android:color/holo_purple"/>
+
+                <Button
+                    android:id="@+id/movie_reviews_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/movie_reviews"
+                    android:textColor="@android:color/holo_purple"/>
+
             </LinearLayout>
 
 
@@ -87,10 +105,16 @@
             android:textStyle="italic"
             tools:text="@string/hello_blank_fragment" />
 
-        <ListView
-            android:id="@+id/trailer_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
+        <!--<ListView-->
+            <!--android:id="@+id/trailer_list_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--&gt;</ListView>-->
+
+        <!--<ListView-->
+            <!--android:id="@+id/reviews_list_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"></ListView>-->
 
 
 

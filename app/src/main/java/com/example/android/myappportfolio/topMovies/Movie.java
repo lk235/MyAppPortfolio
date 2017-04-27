@@ -19,24 +19,20 @@ public class Movie implements Parcelable {
 
 
     private String categroy;
+
     private String imageUrl;
-
     private String title;
-
     private String release_date;
-
     private String vote;
     private String overview;
     private String runtime;
 
-
-
-
     private String trailerName;
-
-
-
     private String trailerUrl;
+
+    private String reviewAuthor;
+    private String reviewContent;
+    private String reviewUrl;
 
     private String colledted;
 
@@ -122,6 +118,31 @@ public class Movie implements Parcelable {
     public void setTrailerUrl(String trailerUrl) {
         this.trailerUrl = trailerUrl;
     }
+
+    public String getReviewAuthor() {
+        return reviewAuthor;
+    }
+
+    public void setReviewAuthor(String reviewAuthor) {
+        this.reviewAuthor = reviewAuthor;
+    }
+
+    public String getReviewContent() {
+        return reviewContent;
+    }
+
+    public void setReviewContent(String reviewContent) {
+        this.reviewContent = reviewContent;
+    }
+
+    public String getReviewUrl() {
+        return reviewUrl;
+    }
+
+    public void setReviewUrl(String reviewUrl) {
+        this.reviewUrl = reviewUrl;
+    }
+
 
 
     public String getColledted() {

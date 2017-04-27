@@ -36,6 +36,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int DETAIL_LOADER = 0;
     private static  final String MOVIE_COLLECT = "收藏";
     private static final String MOVIE_COLLECTED = "已收藏";
+    public static final String MOVIE_TRAILER_NAME = "movie_trailer_name";
+    public static final String MOVIE_TRAILER_URL_DATA = "movie_trailer_data";
 
 
 
@@ -49,6 +51,9 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntry.COLUMN_RUNTIME,
             MovieContract.MovieEntry.COLUMN_TRAILER_NAME,
             MovieContract.MovieEntry.COLUMN_TRAILER_URL,
+            MovieContract.MovieEntry.COLUMN_REVIEW_AUTHOR,
+            MovieContract.MovieEntry.COLUMN_REVIEW_CONTENT,
+            MovieContract.MovieEntry.COLUMN_REVIEW_URL,
             MovieContract.MovieEntry.COLUMN_COLLECTED
     };
 
@@ -61,7 +66,10 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_RUNTIME = 6;
     private static final int COL_TRAILER_NAME= 7;
     private static final int COL_TRAILER_URL= 8;
-    private static final int COL_COLLECTED = 9;
+    public static final int COL_COLUMN_REVIEW_AUTHOR = 9;
+    public static final int COL_COLUMN_REVIEW_CONTENT = 10;
+    public static final int COL_COLUMN_REVIEW_URL = 11;
+    private static final int COL_COLLECTED = 12;
 
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
@@ -70,7 +78,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mOverViewTextView;
     private TextView mRunTimeTextView;
     private Button mCollectButton;
-    private ListView mTrailerListView;
+    private Button mTrailerButton;
+    private Button mReviewsButton;
 
 
 
@@ -93,7 +102,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
         mOverViewTextView = (TextView) rootView.findViewById(R.id.overview_text_view);
         mRunTimeTextView = (TextView) rootView.findViewById(R.id.runtime_text_view) ;
         mCollectButton = (Button) rootView.findViewById(R.id.movie_collect_button);
-        mTrailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
+        mTrailerButton = (Button) rootView.findViewById(R.id.movie_trailer_button);
+        mReviewsButton = (Button) rootView.findViewById(R.id.movie_reviews_button);
 
 
 
@@ -145,6 +155,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             mRunTimeTextView.setText(cursor.getString(COL_RUNTIME));
             mCollectButton.setText(cursor.getString(COL_COLLECTED));
 
+
             mCollectButton.setOnClickListener(new View.OnClickListener() {
                 Uri uri = MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID));
 
@@ -184,35 +195,22 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
                 }
             });
 
-       ;
-        final String[] trailerNameData = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
-        final String[] trailerUrlData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_URL));
-
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1,
-                trailerNameData);
-
-        mTrailerListView.setAdapter(adapter);
-        ListAdapter listAdapter = mTrailerListView.getAdapter();
-        int rows = listAdapter.getCount();
-        int height = 150 * rows;
-
-        ViewGroup.LayoutParams params = mTrailerListView.getLayoutParams();
-        params.height = height;
-        mTrailerListView.setLayoutParams(params);
-        mTrailerListView.requestLayout();
-
-        mTrailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mTrailerButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View v) {
+                final String[] trailerNameData = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
+                final String[] trailerUrlData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_URL));
 
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrlData[position]) );
-                    startActivity(intent);
+                Intent intent = new Intent(getActivity(), MovieTrailerActivity.class);
+                intent.putExtra(MOVIE_TRAILER_NAME, trailerNameData);
+                intent.putExtra(MOVIE_TRAILER_URL_DATA , trailerUrlData);
+
+                startActivity(intent);
 
             }
         });
+
+       ;
 
 
 

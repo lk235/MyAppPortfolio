@@ -17,6 +17,8 @@
 
     <string name="movie_collect">收藏</string>
     <string name="movie_colleted">已收藏</string>
+    <string name="movie_trailer">预告片</string>
+    <string name="movie_reviews">评论</string>
 
 
     <string-array name="sort_type">

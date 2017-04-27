@@ -129,6 +129,18 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
            }
            movie.setTrailerName(convertArrayToString(nameStr));
             movie.setTrailerUrl(convertArrayToString(urlStr));
+            ArrayList<String[]> retReviews = getReviewsFromUri(movieId);
+            String[] reviewAuthor = new String[retReviews.size()];
+            String[] reviewContent = new String[retReviews.size()];
+            String[] reviewUrl = new String[retReviews.size()];
+            for(int k = 0; k < retReviews.size(); k++  ){
+                reviewAuthor[k] = retReviews.get(k)[0];
+                reviewContent[k] = retReviews.get(k)[1];
+                reviewUrl[k] = retReviews.get(k)[2];
+            }
+            movie.setReviewAuthor(convertArrayToString(reviewAuthor));
+            movie.setReviewContent(convertArrayToString(reviewContent));
+            movie.setReviewUrl(convertArrayToString(reviewUrl));
 
 
 
@@ -312,10 +324,8 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
                author = jsonArray.getJSONObject(i).getString(OWM_AUTHOR);
                 content = jsonArray.getJSONObject(i).getString(OWM_CONTENT);
-                url.add(new String[] {trailerNmae, trailerUrl});
-
-
-
+                url = jsonArray.getJSONObject(i).getString(OWN_URL);
+                movieReviews.add(new String[]{author, content, url});
 
             }
 
@@ -326,10 +336,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         }
 
 
-
-
-        Log.i("TRAILER", movieTrailers.get(0)[0]);
-        return  movieTrailers;
+        return  movieReviews;
 
 
 
