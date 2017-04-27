@@ -24,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -273,6 +274,61 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
 
        Log.i("TRAILER", movieTrailers.get(0)[0]);
+        return  movieTrailers;
+
+
+
+    }
+
+    private ArrayList<String[]> getReviewsFromUri (String movieId){
+        final String REVIEWS = "reviews";
+
+        ArrayList<String[]> movieReviews = new ArrayList<>();
+        String author;
+        String content;
+        String url;
+        Uri uri = Uri.parse(MOVIE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath(REVIEWS)
+                .appendQueryParameter(API_KEY, apiKey)
+                .build();
+
+        getDataFromHttp(uri);
+
+        final String OWM_RESULTS = "results";
+        final String OWM_AUTHOR = "author";
+        final String OWM_CONTENT = "content";
+        final String OWN_URL = "url";
+
+        try
+
+        {
+            JSONObject jsonString = new JSONObject(movieJsonStr);
+            JSONArray jsonArray = jsonString.getJSONArray(OWM_RESULTS);
+            Log.i("HERE","HERE");
+
+
+            for (int i = 0; i < jsonArray.length(); i++ ){
+
+               author = jsonArray.getJSONObject(i).getString(OWM_AUTHOR);
+                content = jsonArray.getJSONObject(i).getString(OWM_CONTENT);
+                url.add(new String[] {trailerNmae, trailerUrl});
+
+
+
+
+            }
+
+
+
+        } catch (JSONException js) {
+            Log.e(TAG, "JSON ERROR");
+        }
+
+
+
+
+        Log.i("TRAILER", movieTrailers.get(0)[0]);
         return  movieTrailers;
 
 
