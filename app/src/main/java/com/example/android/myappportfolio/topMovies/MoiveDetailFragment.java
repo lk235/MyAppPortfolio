@@ -38,6 +38,8 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final String MOVIE_COLLECTED = "已收藏";
     public static final String MOVIE_TRAILER_NAME = "movie_trailer_name";
     public static final String MOVIE_TRAILER_URL_DATA = "movie_trailer_data";
+    public static final String MOVIE_REVIEW_AUTHOR = "movie_review_author";
+    public static final String MOVIE_REVIEW_CONTENT = "movie_review_content";
 
 
 
@@ -198,12 +200,27 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
         mTrailerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String[] trailerNameData = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
-                final String[] trailerUrlData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_URL));
+                String[] trailerNameData = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
+                String[] trailerUrlData =   FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_URL));
 
                 Intent intent = new Intent(getActivity(), MovieTrailerActivity.class);
                 intent.putExtra(MOVIE_TRAILER_NAME, trailerNameData);
                 intent.putExtra(MOVIE_TRAILER_URL_DATA , trailerUrlData);
+
+                startActivity(intent);
+
+            }
+        });
+
+        mReviewsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] movieReviewAuthor = FetchMovieTask.convertStringToArray(cursor.getString(COL_COLUMN_REVIEW_AUTHOR));
+                String[] movieReviewContent = FetchMovieTask.convertStringToArray(cursor.getString(COL_COLUMN_REVIEW_CONTENT));
+
+                Intent intent = new Intent(getActivity(), MovieReviewsActivity.class);
+                intent.putExtra(MOVIE_REVIEW_AUTHOR, movieReviewAuthor);
+                intent.putExtra(MOVIE_REVIEW_CONTENT, movieReviewContent);
 
                 startActivity(intent);
 

@@ -10,4 +10,5 @@
     <dimen name="movie_trailer_item_textview_width">100dp</dimen>
     <dimen name="movie_trailer_item_textview_height">100dp</dimen>
     <dimen name="movie_trailer_item_textview_drawable_padding">-270px</dimen>
+    <dimen name="movie_review_item_author_textsize">20sp</dimen>
 </resources>
