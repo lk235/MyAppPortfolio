@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/movie_trailer_item_text_view"
+    android:layout_width="@dimen/movie_trailer_item_textview_width"
+    android:layout_height="@dimen/movie_trailer_item_textview_height"
+    android:text="@string/app_name"
+    android:textColor="@android:color/holo_orange_light"
+    android:typeface="serif"
+    android:gravity="center_horizontal"
+    android:drawablePadding="@dimen/movie_trailer_item_textview_drawable_padding"
+    android:drawableTop="@drawable/play4"
+    >
+
+</TextView>

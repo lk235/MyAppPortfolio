@@ -6,6 +6,12 @@
         android:id="@+id/trailer_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"></GridView>
+        android:numColumns="3"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+
+        >
+
+    </GridView>
 
 </FrameLayout>
