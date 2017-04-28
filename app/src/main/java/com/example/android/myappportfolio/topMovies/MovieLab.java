@@ -2,13 +2,8 @@ package com.example.android.myappportfolio.topMovies;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-
-import com.example.android.myappportfolio.R;
-import com.example.android.myappportfolio.topMovies.data.MovieCursorWrapper;
 
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
 
@@ -61,54 +56,7 @@ public class MovieLab {
         return values;
     }
 
-    public List<Movie> getmMovies(){
-        //return mMovies;
-        List<Movie> movies = new ArrayList<>();
 
-        Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                MovieListFragment.MOVIE_COLUMNS,
-                null,
-                null,
-                null,
-                null);
-
-        MovieCursorWrapper cursorWrapper = new MovieCursorWrapper(cursor);
-
-        try {
-            cursorWrapper.moveToFirst();
-            while (!cursorWrapper.isAfterLast()) {
-                movies.add(cursorWrapper.getMovie());
-                cursor.moveToNext();
-            }
-        } finally {
-            cursor.close();
-        }
-        return movies;
-    }
-
-    public Boolean isMovieExist( String categroySetting){
-
-        //return mMovies.get(id);
-        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(categroySetting).build();
-        Cursor cursor = mContext.getContentResolver().query(
-                uri,
-                null,
-                null,
-                new String[]{categroySetting},
-                null,
-                null
-        );
-
-
-        if(cursor.moveToFirst()){
-            return true;
-        }
-
-
-
-       // return null;
-        return null;
-    }
 
     public void addMovie(Movie movie){
         //mMovies.add(movie);
@@ -124,20 +72,10 @@ public class MovieLab {
                 null);
     }
 
-    public void clearAllMovies(){
-        //mMovies.clear();
 
-        mContext.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                null,
-                null);
-    }
 
     public boolean isEmpty(String categroySetting){
-//        if(mMovies.size() > 0){
-//            return true;
-//        }else {
-//            return false;
-//        }
+
        Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                null,
                MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " =? ",

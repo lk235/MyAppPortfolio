@@ -61,20 +61,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
 
     }
 
-//    @Override
-//    protected void onPreExecute() {
-//        super.onPreExecute();
-//        //get sharedPreferences here
-//
-//
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-//
-//        String key = Resources.getSystem().getString(R.string.pref_sort_key);
-//        String value = Resources.getSystem().getString(R.string.pref_sort_default);
-//        mCategroySetting = sharedPreferences.getString(key, value);
-//
-//    }
-
 
 
     protected MovieLab doInBackground(String... queryType) {

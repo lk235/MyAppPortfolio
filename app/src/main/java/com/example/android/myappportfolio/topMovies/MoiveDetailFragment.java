@@ -55,7 +55,6 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
             MovieContract.MovieEntry.COLUMN_TRAILER_URL,
             MovieContract.MovieEntry.COLUMN_REVIEW_AUTHOR,
             MovieContract.MovieEntry.COLUMN_REVIEW_CONTENT,
-            MovieContract.MovieEntry.COLUMN_REVIEW_URL,
             MovieContract.MovieEntry.COLUMN_COLLECTED
     };
 
@@ -70,8 +69,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int COL_TRAILER_URL= 8;
     public static final int COL_COLUMN_REVIEW_AUTHOR = 9;
     public static final int COL_COLUMN_REVIEW_CONTENT = 10;
-    public static final int COL_COLUMN_REVIEW_URL = 11;
-    private static final int COL_COLLECTED = 12;
+    private static final int COL_COLLECTED = 11;
 
     private TextView mMovieTitleTextView;
     private ImageView mMoiveImageView;
@@ -176,8 +174,7 @@ public class MoiveDetailFragment extends Fragment implements LoaderManager.Loade
 
                 @Override
                 public void onClick(View v) {
-                    Log.i("button clicked", "" + mCollectButton.getText());
-                    Log.i("getText" , getString(R.string.movie_collect));
+
 
                     switch (mCollectButton.getText().toString()){
                         case MOVIE_COLLECT :
