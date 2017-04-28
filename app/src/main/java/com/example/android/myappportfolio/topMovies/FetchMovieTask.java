@@ -37,6 +37,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     private static final String COLLECT = "收藏";
     private static final String strSeparator = ",";
+    private static final String REVIEW_BY="A Review BY: ";
     private final Context mContext;
    // private MovieAdapter mMovieAdapter;
     private MovieLab mMovieLab;
@@ -134,7 +135,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             String[] reviewContent = new String[retReviews.size()];
             String[] reviewUrl = new String[retReviews.size()];
             for(int k = 0; k < retReviews.size(); k++  ){
-                reviewAuthor[k] = retReviews.get(k)[0];
+                reviewAuthor[k] = REVIEW_BY + retReviews.get(k)[0];
                 reviewContent[k] = retReviews.get(k)[1];
                 reviewUrl[k] = retReviews.get(k)[2];
             }

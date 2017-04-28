@@ -13,10 +13,10 @@ public class MovieTrailerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
+        setContentView(R.layout.activity_movie_trailer);
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container_detail, new MovieTrailerFragment())
+                    .add(R.id.container_trailer, new MovieTrailerFragment())
                     .commit();
         }
     }
