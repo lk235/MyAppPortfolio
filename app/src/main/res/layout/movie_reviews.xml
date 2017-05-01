@@ -5,17 +5,14 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/movie_review_author_text_view"
+        android:id="@+id/movie_review_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        tools:text="@string/hello_blank_fragment" />/>
-
-    <TextView
-        android:id="@+id/movie_review_content_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="@string/hello_blank_fragment" />/>
+        android:paddingTop="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/hello_blank_fragment"
+        tools:text="@string/app_name"
+        />
 
 </LinearLayout>

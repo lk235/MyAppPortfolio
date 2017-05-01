@@ -31,8 +31,9 @@ public class Movie implements Parcelable {
     private String trailerUrl;
 
     private String reviewAuthor;
+
+
     private String reviewContent;
-    private String reviewUrl;
 
     private String colledted;
 
@@ -135,13 +136,7 @@ public class Movie implements Parcelable {
         this.reviewContent = reviewContent;
     }
 
-    public String getReviewUrl() {
-        return reviewUrl;
-    }
 
-    public void setReviewUrl(String reviewUrl) {
-        this.reviewUrl = reviewUrl;
-    }
 
 
 

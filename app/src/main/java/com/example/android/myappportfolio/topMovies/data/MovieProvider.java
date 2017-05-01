@@ -119,7 +119,7 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public boolean onCreate(){
-        mOpenHelper = new MovieDBHelper(getContext());
+        mOpenHelper = MovieDBHelper.getInstance(getContext());
         return true;
     }
 

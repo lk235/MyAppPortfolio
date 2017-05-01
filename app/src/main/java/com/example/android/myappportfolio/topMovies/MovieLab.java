@@ -50,7 +50,6 @@ public class MovieLab {
         values.put(MovieContract.MovieEntry.COLUMN_TRAILER_URL, movie.getTrailerUrl());
         values.put(MovieContract.MovieEntry.COLUMN_REVIEW_AUTHOR, movie.getReviewAuthor());
         values.put(MovieContract.MovieEntry.COLUMN_REVIEW_CONTENT, movie.getReviewContent());
-        values.put(MovieContract.MovieEntry.COLUMN_REVIEW_URL, movie.getReviewUrl());
         values.put(MovieContract.MovieEntry.COLUMN_COLLECTED, movie.getColledted());
 
         return values;

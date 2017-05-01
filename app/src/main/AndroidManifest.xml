@@ -24,10 +24,6 @@
         <activity android:name=".topMovies.MovieDetailActivity"
             android:parentActivityName=".topMovies.MainActivity"></activity>
         <activity android:name=".topMovies.SettingActivity"></activity>
-        <activity android:name=".topMovies.MovieTrailerActivity"
-            android:parentActivityName=".topMovies.MovieDetailActivity"></activity>
-        <activity android:name=".topMovies.MovieReviewsActivity"
-            android:parentActivityName=".topMovies.MovieDetailActivity"></activity>
 
         <provider
             android:authorities="com.example.android.myappportfolio.topMovies"

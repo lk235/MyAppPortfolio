@@ -30,6 +30,7 @@
                 android:id="@+id/moive_image_view"
                 android:layout_width="@dimen/movie_image_width"
                 android:layout_height="@dimen/movie_image_height"
+                android:paddingLeft="10dp"
                 android:src="@drawable/ic_sync_black_24dp" />
 
             <LinearLayout
@@ -72,21 +73,7 @@
                     android:text="@string/movie_collect"
                     android:textColor="@android:color/holo_purple"/>
 
-                <Button
-                    android:id="@+id/movie_trailer_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/movie_trailer"
-                    android:textColor="@android:color/holo_purple"/>
 
-                <Button
-                    android:id="@+id/movie_reviews_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/movie_reviews"
-                    android:textColor="@android:color/holo_purple"/>
 
             </LinearLayout>
 
@@ -102,22 +89,11 @@
             android:id="@+id/overview_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             android:textStyle="italic"
             tools:text="@string/hello_blank_fragment" />
-
-        <!--<ListView-->
-            <!--android:id="@+id/trailer_list_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--&gt;</ListView>-->
-
-        <!--<ListView-->
-            <!--android:id="@+id/reviews_list_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"></ListView>-->
-
-
-
 
 
 

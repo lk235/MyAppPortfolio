@@ -22,6 +22,8 @@ import java.util.List;
 public class MovieAdapter extends CursorAdapter {
 
 
+
+
     public MovieAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, flags);
     }
@@ -46,7 +48,11 @@ public class MovieAdapter extends CursorAdapter {
 
 
     }
+
+
 }
+
+
 
 
 

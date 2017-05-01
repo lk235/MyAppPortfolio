@@ -40,7 +40,6 @@ public class MovieContract {
         public static final String COLUMN_TRAILER_URL = "trailer_url";
         public static final String COLUMN_REVIEW_AUTHOR = "review_author";
         public static final String COLUMN_REVIEW_CONTENT = "review_content";
-        public static final String COLUMN_REVIEW_URL = "review_url";
         public static final String COLUMN_COLLECTED = "collected";
 
 

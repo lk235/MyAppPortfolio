@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/movie_trailer_item_text_view"
-    android:layout_width="@dimen/movie_trailer_item_textview_width"
-    android:layout_height="@dimen/movie_trailer_item_textview_height"
-    android:text="@string/app_name"
-    android:textColor="@android:color/holo_orange_light"
-    android:typeface="serif"
-    android:gravity="center_horizontal"
-    android:drawablePadding="@dimen/movie_trailer_item_textview_drawable_padding"
-    android:drawableTop="@drawable/play4"
-    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:toos="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</TextView>
+
+    <ImageView
+        android:id="@+id/movie_trailer_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:paddingRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/movie_trailer_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_purple"
+        android:typeface="sans"
+        toos:text="@string/app_name"/>
+
+</LinearLayout>

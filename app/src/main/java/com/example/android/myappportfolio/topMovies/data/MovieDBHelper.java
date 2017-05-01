@@ -12,11 +12,22 @@ import static com.example.android.myappportfolio.topMovies.data.MovieContract.*;
 
 public class MovieDBHelper extends SQLiteOpenHelper{
 
+    private static MovieDBHelper sInstance;
+
     private static final int DATEBASE_VRESION = 1;
 
     public static final String DATABASE_NAME = "movie.db";
 
-    public MovieDBHelper(Context context){
+    public static synchronized MovieDBHelper getInstance(Context context) {
+
+
+        if (sInstance == null) {
+            sInstance = new MovieDBHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    private MovieDBHelper(Context context){
         super(context, DATABASE_NAME, null, DATEBASE_VRESION);
     }
 
@@ -35,7 +46,6 @@ public class MovieDBHelper extends SQLiteOpenHelper{
                 MovieEntry.COLUMN_TRAILER_URL + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_REVIEW_AUTHOR + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_REVIEW_CONTENT + " TEXT NOT NULL, " +
-                MovieEntry.COLUMN_REVIEW_URL + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_COLLECTED + " TEXT NOT NULL " +
                 " );";
 
@@ -45,8 +55,8 @@ public class MovieDBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion){
-        sqLiteDatabase.execSQL("DROP TABLE IF EXITS " + MovieEntry.TABLE_NAME);
-        onCreate(sqLiteDatabase);
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXITS " + MovieEntry.TABLE_NAME);
+//        onCreate(sqLiteDatabase);
     }
 
 }

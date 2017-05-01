@@ -119,17 +119,13 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             ArrayList<String[]> retReviews = getReviewsFromUri(movieId);
             String[] reviewAuthor = new String[retReviews.size()];
             String[] reviewContent = new String[retReviews.size()];
-            String[] reviewUrl = new String[retReviews.size()];
             for(int k = 0; k < retReviews.size(); k++  ){
-                reviewAuthor[k] = REVIEW_BY + retReviews.get(k)[0];
+                reviewAuthor[k] = retReviews.get(k)[0] ;
                 reviewContent[k] = retReviews.get(k)[1];
-                reviewUrl[k] = retReviews.get(k)[2];
+
             }
             movie.setReviewAuthor(convertArrayToString(reviewAuthor));
             movie.setReviewContent(convertArrayToString(reviewContent));
-            movie.setReviewUrl(convertArrayToString(reviewUrl));
-
-
 
             Log.e(TAG,stringArrayList.get(i)[1] );
 
