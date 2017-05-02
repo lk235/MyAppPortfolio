@@ -1,6 +1,7 @@
 package com.example.android.myappportfolio.topMovies;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -11,6 +12,7 @@ import android.text.format.Time;
 import android.util.Log;
 
 import com.example.android.myappportfolio.R;
+import com.example.android.myappportfolio.topMovies.data.MovieContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +27,7 @@ import java.net.URL;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -125,8 +128,30 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             movie.setReviewAuthor(convertArrayToString(reviewAuthor));
             movie.setReviewContent(convertArrayToString(reviewContent));
 
-
-            mMovieLab.addMovie(movie);
+            ContentValues values = new ContentValues();
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(stringArrayList.size());
+            values.put(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING, movie.getCategroy());
+            values.put(MovieContract.MovieEntry.COLUMN_IMAGE_URL, movie.getImageUrl());
+            values.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+            values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
+            values.put(MovieContract.MovieEntry.COLUMN_VOTE, movie.getVote());
+            values.put(MovieContract.MovieEntry.COLUMN_OVER_VIEW, movie.getOverview());
+            values.put(MovieContract.MovieEntry.COLUMN_RUNTIME, movie.getRuntime());
+            values.put(MovieContract.MovieEntry.COLUMN_TRAILER_NAME, movie.getTrailerName());
+            values.put(MovieContract.MovieEntry.COLUMN_TRAILER_URL, movie.getTrailerUrl());
+            values.put(MovieContract.MovieEntry.COLUMN_REVIEW_AUTHOR, movie.getReviewAuthor());
+            values.put(MovieContract.MovieEntry.COLUMN_REVIEW_CONTENT, movie.getReviewContent());
+            values.put(MovieContract.MovieEntry.COLUMN_COLLECTED, movie.getColledted());
+            cVVector.add(values);
+            int inserted = 0;
+            // add to database
+            if ( cVVector.size() > 0 ) {
+                ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                cVVector.toArray(cvArray);
+                inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
+            }
+            Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
+            //mMovieLab.addMovie(movie);
 
 
         }

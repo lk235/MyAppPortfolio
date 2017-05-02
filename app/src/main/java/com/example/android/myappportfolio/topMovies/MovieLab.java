@@ -9,6 +9,7 @@ import com.example.android.myappportfolio.topMovies.data.MovieContract;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by lk235 on 2017/3/18.
@@ -39,6 +40,7 @@ public class MovieLab {
     private static ContentValues getContentValues(Movie movie){
 
         ContentValues values = new ContentValues();
+
         values.put(MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING, movie.getCategroy());
         values.put(MovieContract.MovieEntry.COLUMN_IMAGE_URL, movie.getImageUrl());
         values.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
@@ -52,6 +54,7 @@ public class MovieLab {
         values.put(MovieContract.MovieEntry.COLUMN_REVIEW_CONTENT, movie.getReviewContent());
         values.put(MovieContract.MovieEntry.COLUMN_COLLECTED, movie.getColledted());
 
+
         return values;
     }
 
@@ -61,6 +64,7 @@ public class MovieLab {
         //mMovies.add(movie);
         ContentValues values = getContentValues(movie);
         mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
+        //mContext.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI,values);
     }
 
     public void deleteMovies(String categroySetting){
