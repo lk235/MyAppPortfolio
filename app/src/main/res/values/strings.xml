@@ -22,13 +22,15 @@
 
 
     <string-array name="sort_type">
-        <item>Popular Movies</item>
-        <item>TopRated Movies</item>
+        <item>热门电影</item>
+        <item>高分电影</item>
+        <item>收藏电影</item>
     </string-array>
 
     <string-array name="sort_type_value">
         <item>popular</item>
         <item>top_rated</item>
+        <item>已收藏</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -108,8 +108,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             String [] urlStr = new String[retTrailer.size()];
            for(int j =0; j < retTrailer.size(); j++){
                nameStr[j] = retTrailer.get(j)[0];
-               Log.i("nameStr", nameStr[j]);
-               Log.i("HERE2","HERE2");
                urlStr[j] = retTrailer.get(j)[1];
 
 
@@ -127,7 +125,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             movie.setReviewAuthor(convertArrayToString(reviewAuthor));
             movie.setReviewContent(convertArrayToString(reviewContent));
 
-            Log.e(TAG,stringArrayList.get(i)[1] );
 
             mMovieLab.addMovie(movie);
 
@@ -244,8 +241,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         {
             JSONObject jsonString = new JSONObject(movieJsonStr);
             JSONArray jsonArray = jsonString.getJSONArray(OWM_RESULTS);
-            Log.i("HERE","HERE");
-
 
             for (int i = 0; i < jsonArray.length(); i++ ){
 
@@ -266,9 +261,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         }
 
 
-
-
-       Log.i("TRAILER", movieTrailers.get(0)[0]);
         return  movieTrailers;
 
 
@@ -300,8 +292,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
         {
             JSONObject jsonString = new JSONObject(movieJsonStr);
             JSONArray jsonArray = jsonString.getJSONArray(OWM_RESULTS);
-            Log.i("HERE","HERE");
-
 
             for (int i = 0; i < jsonArray.length(); i++ ){
 
@@ -339,7 +329,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, MovieLab> {
             Log.i(TAG, url + "");
 
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setConnectTimeout(5000);
+            urlConnection.setConnectTimeout(10000);
             urlConnection.setReadTimeout(10000);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();

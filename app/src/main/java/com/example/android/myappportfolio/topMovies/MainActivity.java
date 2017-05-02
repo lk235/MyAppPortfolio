@@ -38,13 +38,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("RESUME", "RESUME");
-        String categroySetting = getPreSetting();
-        Log.i("mS", mLastCateGroySetting);
-        Log.i("S", categroySetting);
-        Log.i("BOOLEAN", "" + (!categroySetting.equals(mLastCateGroySetting)));
+        String sortTypeSetting = getPreSetting();
+        Log.i("OLD", mLastCateGroySetting);
+        Log.i("NEW", sortTypeSetting);
+        Log.i("BOOLEAN", "" + (!sortTypeSetting.equals(mLastCateGroySetting)));
 
-        if (  !categroySetting.equals(mLastCateGroySetting)) {
-            mLastCateGroySetting = categroySetting;
+
+        if (  !sortTypeSetting.equals(mLastCateGroySetting)) {
+            mLastCateGroySetting = sortTypeSetting;
             Log.i("NOT EQUALS", "");
             MovieListFragment mf = (MovieListFragment) getSupportFragmentManager().findFragmentByTag(MOVIE_FRAGMENT_TAG);
             if ( null != mf ) {

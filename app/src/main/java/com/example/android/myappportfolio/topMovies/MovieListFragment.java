@@ -54,6 +54,7 @@ import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 
@@ -62,17 +63,25 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
  */
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int MOVIE_LOADER = 0;
-    private static final String MOVIE_COLLECTED = "已收藏";
+
+    public static final String SORT_BY_POPULAR = "popular";
+    public static final String SORT_BY_TOP_RATED = "top_rated";
+    public static final String SORT_BY_COLLECTED = "已收藏";
+    private static final String sCollected =
+            MovieContract.MovieEntry.COLUMN_COLLECTED + " =? ";
+    private static final String sSortType =
+            MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING + " =? ";
+
 
     public static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_CATEGROY_SETTING,
             MovieContract.MovieEntry.COLUMN_IMAGE_URL,
-            MovieContract.MovieEntry.COLUMN_TITLE,
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
-            MovieContract.MovieEntry.COLUMN_VOTE,
-            MovieContract.MovieEntry.COLUMN_OVER_VIEW,
-            MovieContract.MovieEntry.COLUMN_RUNTIME,
+//            MovieContract.MovieEntry.COLUMN_TITLE,
+//            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+//            MovieContract.MovieEntry.COLUMN_VOTE,
+//            MovieContract.MovieEntry.COLUMN_OVER_VIEW,
+//            MovieContract.MovieEntry.COLUMN_RUNTIME,
 
             MovieContract.MovieEntry.COLUMN_COLLECTED
 
@@ -94,19 +103,15 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public MovieLab mMovieLab;
     public List<Movie> mMovies;
 
-   // private RecyclerView mMovieListRecylerView;
+    // private RecyclerView mMovieListRecylerView;
     private GridView mGridView;
     private MovieAdapter mMovieAdapter;
-    public  static String mLastCateGorySetting;
-
-
-
+    private String mLastSorTypeSetting;
 
 
     public MovieListFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -122,16 +127,19 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie_main, container, false);
 
-        mGridView = (GridView)rootView.findViewById(R.id.gridview_movie);
-        mMovieLab  = MovieLab.get(getActivity());
+        mGridView = (GridView) rootView.findViewById(R.id.gridview_movie);
+        mMovieLab = MovieLab.get(getActivity());
 
 
         mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         mGridView.setAdapter(mMovieAdapter);
-        Log.i("OnCreateView", "");
-        mLastCateGorySetting = getPrefCateGorySetting();
-        if(mMovieLab.isEmpty(getPrefCateGorySetting() )){
-            checkNetworkAndFetchData();}
+
+        mLastSorTypeSetting = getPrefCateGorySetting();
+
+        if( !mLastSorTypeSetting.equals(SORT_BY_COLLECTED) && mMovieLab.isEmpty(mLastSorTypeSetting)){
+            checkNetworkAndFetchData();
+        }
+
 
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -139,8 +147,8 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 Log.i("TAG", cursor.toString());
-                Log.i("TAG" , "" + cursor.getCount());
-                if(cursor != null){
+                Log.i("TAG", "" + cursor.getCount());
+                if (cursor != null) {
                     Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
                     intent.setData(MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID)));
 
@@ -149,37 +157,61 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-
+        Log.i("createVIEW", mLastSorTypeSetting);
         return rootView;
     }
 
 
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState){
+    public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle){
-        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(getPrefCateGorySetting()).build();
-        return  new CursorLoader(getActivity(),
-                uri,
-                MOVIE_COLUMNS,
-                null,
-                null,
-                null);
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        //Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(getPrefCateGorySetting()).build();
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+
+        switch (getPrefCateGorySetting()) {
+            case SORT_BY_POPULAR:
+                return new CursorLoader(getActivity(),
+                        uri,
+                        MOVIE_COLUMNS,
+                        sSortType,
+                        new String[]{SORT_BY_POPULAR},
+                        null
+                );
+
+            case SORT_BY_TOP_RATED:
+                return new CursorLoader(getActivity(),
+                        uri,
+                        MOVIE_COLUMNS,
+                        sSortType,
+                        new String[]{SORT_BY_TOP_RATED},
+                        null);
+
+            case SORT_BY_COLLECTED:
+                return new CursorLoader(getActivity(),
+                        uri,
+                        MOVIE_COLUMNS,
+                        sCollected,
+                        new String[]{SORT_BY_COLLECTED},
+                        null);
+            default:
+                return null;
+        }
+
 
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor){
-              mMovieAdapter.swapCursor(cursor);
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mMovieAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader){
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mMovieAdapter.swapCursor(null);
     }
 
@@ -191,24 +223,18 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()){
+        switch (menuItem.getItemId()) {
             case R.id.action_setting:
                 Intent intent = new Intent(getActivity(), SettingActivity.class);
                 startActivityForResult(intent, 0);
                 break;
 
             case R.id.action_refresh:
-                checkNetworkAndFetchData();
+                if(!getPrefCateGorySetting().equals(SORT_BY_COLLECTED)){
+                    checkNetworkAndFetchData();
+                }
+
                 break;
-
-            case R.id.action_colletced:
-                Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(getPrefCateGorySetting())
-                        .appendPath(MOVIE_COLLECTED).build();
-                Cursor cursor = getActivity().getContentResolver().query(uri, MOVIE_COLUMNS, null, null, null);
-
-                mMovieAdapter.swapCursor(cursor);
-
-
 
         }
 
@@ -227,21 +253,17 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
-
-
     /**
      * This method get the sharedPreftrence value and call the asyncTask to get movie data.
      */
     private void updateMovieData() {
-
-
 
         new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefCateGorySetting());
 
 
     }
 
-    private   String getPrefCateGorySetting() {
+    private String getPrefCateGorySetting() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -255,8 +277,6 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
-
-
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -265,25 +285,56 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
-    void onSettingChanged( ) {
+    void onSettingChanged() {
+        String currentSetting = getPrefCateGorySetting();
 
+        switch (currentSetting) {
+            case SORT_BY_COLLECTED:
+                getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+                break;
+            case SORT_BY_POPULAR:
+                updateLoader(currentSetting);
+                break;
+            case SORT_BY_TOP_RATED:
+               updateLoader(currentSetting);
+                break;
 
-        if(mMovieLab.isEmpty(getPrefCateGorySetting())){
-            Log.i("FetchData", "");
+//                if(getPrefCateGorySetting() != SORT_BY_COLLECTED && mMovieLab.isEmpty(getPrefCateGorySetting())){
+//            Log.i("DOWNLOAD", "");
+//
+//            checkNetworkAndFetchData();
+//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+//        }else {
+//            Log.i("RESTART LOADER", "");
+//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+//
+//        }
 
-            checkNetworkAndFetchData();
-            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-        }else {
-            Log.i("RESTART LOADER", "");
-            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
 
         }
 
 
+//        if(getPrefCateGorySetting() != SORT_BY_COLLECTED && mMovieLab.isEmpty(getPrefCateGorySetting())){
+//            Log.i("DOWNLOAD", "");
+//
+//            checkNetworkAndFetchData();
+//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+//        }else {
+//            Log.i("RESTART LOADER", "");
+//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+//
+//        }
 
 
+    }
 
-
+    private void updateLoader(String currentSetting) {
+        if (mMovieLab.isEmpty(currentSetting)) {
+            checkNetworkAndFetchData();
+            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+        } else {
+            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+        }
     }
 }
 
