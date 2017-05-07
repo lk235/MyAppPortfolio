@@ -2,6 +2,7 @@ package com.example.android.myappportfolio.topMovies;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +29,20 @@ public class MovieAdapter extends CursorAdapter {
         super(context, cursor, flags);
     }
 
+    public static class ViewHolder{
+        public final ImageView movieImage;
+
+        public ViewHolder(View view){
+          movieImage =(ImageView) view.findViewById(R.id.movie_image_item);
+        }
+
+    }
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
         return view;
     }
 
@@ -38,13 +50,14 @@ public class MovieAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         //int idx_image_url = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL);
-        ImageView imageView = (ImageView) view.findViewById(R.id.movie_image_item);
+        ViewHolder viewHolder = (ViewHolder)view.getTag();
+        //ImageView imageView = (ImageView) view.findViewById(R.id.movie_image_item);
         String imageUrl = cursor.getString(MovieListFragment.COL_IMAGE_URL);
         Picasso.with(context)
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_sync_black_24dp)
                 .error(R.drawable.ic_info_black_24dp)
-                .into(imageView);
+                .into(viewHolder.movieImage);
 
 
     }
