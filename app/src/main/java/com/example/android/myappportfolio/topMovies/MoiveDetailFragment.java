@@ -7,24 +7,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,9 +25,10 @@ import com.squareup.picasso.Picasso;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoiveDetailFragment extends Fragment {
+public class MoiveDetailFragment extends Fragment  {
 
     private static final int DETAIL_LOADER = 0;
+    public static final String DETAIL_URI = "URI";
     private static final String MOVIE_COLLECT = "收藏";
     private static final String MOVIE_COLLECTED = "已收藏";
     public static final String MOVIE_TRAILER_NAME = "movie_trailer_name";
@@ -87,6 +77,9 @@ public class MoiveDetailFragment extends Fragment {
     private TextView mReviewsTextView;
 
     private MovieTrailerAdapter trailerAdapter;
+    private AsyncQueryHandler mQueryHandler;
+    private Uri mUri;
+
 
 
     public MoiveDetailFragment() {
@@ -97,6 +90,11 @@ public class MoiveDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+       // mUri = MovieContract.MovieEntry.buildMovieUri(0);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DETAIL_URI);
+        }
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movie_trailer, container, false);
@@ -121,7 +119,7 @@ public class MoiveDetailFragment extends Fragment {
 //        mReviewsButton = (Button) rootView.findViewById(R.id.movie_reviews_button);
 
 
-        final AsyncQueryHandler queryHandler = new AsyncQueryHandler(getActivity().getContentResolver()) {
+        mQueryHandler = new AsyncQueryHandler(getActivity().getContentResolver()) {
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
 
@@ -166,7 +164,8 @@ public class MoiveDetailFragment extends Fragment {
                         reviewMixed[i] = "REVIEW BY: " + reviewAuthor[i] + "\n" + reviewContent[i] + "\n\n";
                     }
 
-                    mReviewsTextView.setText(FetchMovieTask.convertArrayToString(reviewMixed).replace("\\n", System.getProperty("line.separator")));
+                    mReviewsTextView.setText(FetchMovieTask.convertArrayToString(reviewMixed)
+                            .replace("\\n", System.getProperty("line.separator")));
 
 
                 }
@@ -177,9 +176,17 @@ public class MoiveDetailFragment extends Fragment {
 
 
         };
+
         Intent intent = getActivity().getIntent();
         final Uri uri = intent.getData();
-        queryHandler.startQuery(1, null, uri, MOVIE_COLUMNS, null, null, null);
+        if(intent == null || uri == null){
+            mQueryHandler.startQuery(1, null, mUri, MOVIE_COLUMNS, null, null, null);
+        }else {
+            mQueryHandler.startQuery(1, null, uri, MOVIE_COLUMNS, null, null, null);
+        }
+
+
+
 
         mCollectButton.setOnClickListener(new View.OnClickListener() {
 
@@ -190,12 +197,12 @@ public class MoiveDetailFragment extends Fragment {
                 switch (mCollectButton.getText().toString()) {
                     case MOVIE_COLLECT:
                         mCollectButton.setText(R.string.movie_colleted);
-                        queryHandler.startUpdate(1, null, uri, getCollectedValues(), null, null);
+                        mQueryHandler.startUpdate(1, null, uri, getCollectedValues(), null, null);
                         break;
 
                     case MOVIE_COLLECTED:
                         mCollectButton.setText(R.string.movie_collect);
-                        queryHandler.startUpdate(1, null, uri, getCollectValues(), null ,null);
+                        mQueryHandler.startUpdate(1, null, uri, getCollectValues(), null ,null);
                         break;
 
 
@@ -209,6 +216,9 @@ public class MoiveDetailFragment extends Fragment {
     }
 
 
+
+
+
     public  ContentValues getCollectValues() {
         ContentValues collectValues = new ContentValues();
         collectValues.put(MovieContract.MovieEntry.COLUMN_COLLECTED, MOVIE_COLLECT);
@@ -219,6 +229,20 @@ public class MoiveDetailFragment extends Fragment {
         ContentValues collectValues = new ContentValues();
         collectValues.put(MovieContract.MovieEntry.COLUMN_COLLECTED, MOVIE_COLLECTED);
         return collectValues;
+    }
+
+
+
+
+
+    void onSettingChanged(){
+        //String currentSetting = Utility.getPrefSortSetting(getActivity());
+        Uri uri = mUri;
+        if(null != uri)
+        mQueryHandler.startQuery(1, null, uri, MOVIE_COLUMNS, null, null, null);
+
+
+
     }
 
 

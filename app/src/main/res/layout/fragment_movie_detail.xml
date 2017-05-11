@@ -10,13 +10,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/touch_selector"
+        >
 
         <TextView
             android:id="@+id/movie_title_text_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/movie_title_height"
-            android:textSize="@dimen/movie_title_text_size"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:fontFamily="sans-serif-condensed"
             android:gravity="center"
             android:background="@android:color/holo_purple"
             tools:text="@string/hello_blank_fragment" />
@@ -34,7 +37,7 @@
                 android:src="@drawable/ic_sync_black_24dp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical"
@@ -44,25 +47,31 @@
 
                 <TextView
                     android:id="@+id/release_date_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:text="@string/hello_blank_fragment"
-                    android:textSize="@dimen/moview_release_data_text_size"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"/>
+
 
                 <TextView
                     android:id="@+id/vote_average_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:text="@string/hello_blank_fragment" />
 
                 <TextView
                     android:id="@+id/runtime_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:text="@string/hello_blank_fragment"/>
 
                 <Button
@@ -71,7 +80,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/movie_collect"
-                    android:textColor="@android:color/holo_purple"/>
+                    android:textColor="@android:color/holo_purple"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:fontFamily="sans-serif-condensed"/>
 
 
 
@@ -87,12 +98,14 @@
 
         <TextView
             android:id="@+id/overview_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
             android:textStyle="italic"
+            android:fontFamily="sans-serif-condensed"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="@string/hello_blank_fragment" />
 
 

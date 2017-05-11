@@ -109,6 +109,13 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     private String mLastSorTypeSetting;
 
 
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
+
     public MovieListFragment() {
         // Required empty public constructor
     }
@@ -149,10 +156,16 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                 Log.i("TAG", cursor.toString());
                 Log.i("TAG", "" + cursor.getCount());
                 if (cursor != null) {
-                    Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-                    intent.setData(MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID)));
+//                    Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+//                    intent.setData(MovieContract.MovieEntry.buildMovieUri(cursor.getLong(COL_MOVIE_ID)));
+//
+//                    startActivity(intent);
+                    ((Callback) getActivity())
+                            .onItemSelected(MovieContract.MovieEntry.buildMovieUri(
+                                    cursor.getLong(COL_MOVIE_ID))
+                            );
 
-                    startActivity(intent);
+
                 }
             }
         });
@@ -299,31 +312,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                updateLoader(currentSetting);
                 break;
 
-//                if(getPrefCateGorySetting() != SORT_BY_COLLECTED && mMovieLab.isEmpty(getPrefCateGorySetting())){
-//            Log.i("DOWNLOAD", "");
-//
-//            checkNetworkAndFetchData();
-//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-//        }else {
-//            Log.i("RESTART LOADER", "");
-//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-//
-//        }
-
 
         }
 
 
-//        if(getPrefCateGorySetting() != SORT_BY_COLLECTED && mMovieLab.isEmpty(getPrefCateGorySetting())){
-//            Log.i("DOWNLOAD", "");
-//
-//            checkNetworkAndFetchData();
-//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-//        }else {
-//            Log.i("RESTART LOADER", "");
-//            getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-//
-//        }
 
 
     }

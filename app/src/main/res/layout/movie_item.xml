@@ -6,7 +6,8 @@
     android:layout_width="180dp"
     android:layout_height="265dp"
     android:adjustViewBounds="true"
-    android:scaleType="centerCrop">
+    android:scaleType="centerCrop"
+    >
     
 </ImageView>
     

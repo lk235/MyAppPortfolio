@@ -20,10 +20,14 @@
         </activity>
         <activity android:name=".topMovies.MainActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MovieStyle"></activity>
         <activity android:name=".topMovies.MovieDetailActivity"
+            android:parentActivityName=".topMovies.MainActivity"
+            android:theme="@style/MovieStyle"></activity>
+        <activity android:name=".topMovies.SettingActivity"
+            android:theme="@style/MovieStyle"
             android:parentActivityName=".topMovies.MainActivity"></activity>
-        <activity android:name=".topMovies.SettingActivity"></activity>
 
         <provider
             android:authorities="com.example.android.myappportfolio.topMovies"
