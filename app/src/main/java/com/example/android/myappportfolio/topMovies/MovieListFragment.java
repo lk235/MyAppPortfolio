@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
 import com.example.android.myappportfolio.topMovies.data.MovieDBHelper;
+import com.example.android.myappportfolio.topMovies.service.MovieService;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -270,8 +271,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
      * This method get the sharedPreftrence value and call the asyncTask to get movie data.
      */
     private void updateMovieData() {
-
-        new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefCateGorySetting());
+        Intent intent = new Intent(getActivity(), MovieService.class);
+        intent.putExtra(MovieService.SORT_SETTING, getPrefCateGorySetting());
+        getActivity().startService(intent);
+       // new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefCateGorySetting());
 
 
     }

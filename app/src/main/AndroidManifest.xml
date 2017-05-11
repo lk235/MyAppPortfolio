@@ -33,6 +33,8 @@
             android:authorities="com.example.android.myappportfolio.topMovies"
             android:name=".topMovies.data.MovieProvider"
             android:exported="true"/>
+
+        <service android:name=".topMovies.service.MovieService"></service>
     </application>
 
 </manifest>
