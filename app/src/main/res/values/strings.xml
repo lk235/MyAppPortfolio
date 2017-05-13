@@ -1,7 +1,7 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">My App Portfolio</string>
     <string name="my_nanodegree_apps">纳米学位应用</string>
-    <string name="hit_movie">热门电影</string>
+    <string name="hot_movie">热门电影</string>
     <string name="stock_eagle">股票雄鹰</string>
     <string name="xzy_reader">XYZ 阅读器</string>
     <string name="most_news">最新闻</string>
@@ -41,6 +41,25 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">myappportfolio.example.com</string>
     <string name="content_authority">com.example.android.myappportfolio.topMovies</string>
+
+    <!-- Notification Format -->
+    <string name="format_notification">
+            New most popular movie: <xliff:g id="movie">%1$s</xliff:g>
+    </string>
+
+    <!-- Strings related to Notification preference -->
+    <string name="pref_last_notification">
+            last_notification
+    </string>
+
+    <!-- Strings related to Notification Enabled preference -->
+    <string
+        name="pref_enable_notifications_key" translatable="false">enable_notifications
+    </string>
+    <string name="pref_enable_notifications_label">Movie Notifications</string>
+    <string name="pref_enable_notifications_true"> Enabled</string>
+    <string name="pref_enable_notifications_false">Not Enabled</string>
+    <string name="pref_enable_notifications_default" translatable="false">true</string>
 
 
 

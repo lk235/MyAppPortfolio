@@ -19,7 +19,7 @@
     <Button
         android:id="@+id/hot_movie_button"
         style="@style/ButtonStyle"
-        android:text="@string/hit_movie" />
+        android:text="@string/hot_movie" />
 
     <Button
         android:id="@+id/stock_eagle_button"

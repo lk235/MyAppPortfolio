@@ -11,6 +11,8 @@ import com.example.android.myappportfolio.R;
  */
 
 public class Utility {
+
+    private static final String strSeparator = ",";
     public static String getPrefSortSetting(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -23,5 +25,24 @@ public class Utility {
                 context.getString((R.string.pref_sort_default)));
 
         return cateGroySetting;
+    }
+
+
+
+    public static String convertArrayToString(String[] array){
+
+
+        String str = "";
+        for (int i = 0; i<array.length; i++) {
+            str = str+array[i];
+            if(i<array.length-1){
+                str = str+strSeparator;
+            }
+        }
+        return str;
+    }
+    public static String[] convertStringToArray(String str){
+        String[] arr = str.split(strSeparator);
+        return arr;
     }
 }

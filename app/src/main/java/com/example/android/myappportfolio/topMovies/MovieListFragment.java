@@ -37,29 +37,11 @@ import android.widget.Toast;
 
 import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
-import com.example.android.myappportfolio.topMovies.data.MovieDBHelper;
-import com.example.android.myappportfolio.topMovies.service.MovieService;
+
 import com.example.android.myappportfolio.topMovies.sync.MovieSyncAdapter;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import static android.content.Context.MODE_PRIVATE;
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 
 /**
@@ -240,19 +222,23 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_setting:
-                Intent intent = new Intent(getActivity(), SettingActivity.class);
-                startActivityForResult(intent, 0);
-                break;
-
-            case R.id.action_refresh:
-                if(!getPrefCateGorySetting().equals(SORT_BY_COLLECTED)){
-                    checkNetworkAndFetchData();
-                }
-
-                break;
-
+//        switch (menuItem.getItemId()) {
+//            case R.id.action_setting:
+//                Intent intent = new Intent(getActivity(), SettingActivity.class);
+//                startActivityForResult(intent, 0);
+//                break;
+//
+//            case R.id.action_refresh:
+//                if(!getPrefCateGorySetting().equals(SORT_BY_COLLECTED)){
+//                    checkNetworkAndFetchData();
+//                }
+//
+//                break;
+//
+//        }
+        if(menuItem.getItemId() == R.id.action_setting){
+            Intent intent = new Intent(getActivity(), SettingActivity.class);
+            startActivityForResult(intent, 0);
         }
 
         return super.onOptionsItemSelected(menuItem);

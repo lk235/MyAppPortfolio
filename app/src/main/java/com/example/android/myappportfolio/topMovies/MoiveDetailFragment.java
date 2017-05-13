@@ -141,8 +141,8 @@ public class MoiveDetailFragment extends Fragment  {
                     mRunTimeTextView.setText(cursor.getString(COL_RUNTIME));
                     mCollectButton.setText(cursor.getString(COL_COLLECTED));
 
-                    String[] trailerName = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
-                    final String[] trailerUrls = FetchMovieTask.convertStringToArray(cursor.getString(COL_TRAILER_URL));
+                    String[] trailerName = Utility.convertStringToArray(cursor.getString(COL_TRAILER_NAME));
+                    final String[] trailerUrls = Utility.convertStringToArray(cursor.getString(COL_TRAILER_URL));
 
                     trailerAdapter = new MovieTrailerAdapter(getActivity(), R.layout.movie_trailer_item, trailerName);
                     mTrailerListView.setAdapter(trailerAdapter);
@@ -157,14 +157,14 @@ public class MoiveDetailFragment extends Fragment  {
                         }
                     });
 
-                    String[] reviewAuthor = FetchMovieTask.convertStringToArray(cursor.getString(COL_REVIEW_AUTHOR));
-                    String[] reviewContent = FetchMovieTask.convertStringToArray(cursor.getString(COL_REVIEW_CONTENT));
+                    String[] reviewAuthor = Utility.convertStringToArray(cursor.getString(COL_REVIEW_AUTHOR));
+                    String[] reviewContent = Utility.convertStringToArray(cursor.getString(COL_REVIEW_CONTENT));
                     String[] reviewMixed = new String[reviewAuthor.length];
                     for (int i = 0; i < reviewAuthor.length; i++) {
                         reviewMixed[i] = "REVIEW BY: " + reviewAuthor[i] + "\n" + reviewContent[i] + "\n\n";
                     }
 
-                    mReviewsTextView.setText(FetchMovieTask.convertArrayToString(reviewMixed)
+                    mReviewsTextView.setText(Utility.convertArrayToString(reviewMixed)
                             .replace("\\n", System.getProperty("line.separator")));
 
 
@@ -180,7 +180,13 @@ public class MoiveDetailFragment extends Fragment  {
         Intent intent = getActivity().getIntent();
         final Uri uri = intent.getData();
         if(intent == null || uri == null){
-            mQueryHandler.startQuery(1, null, mUri, MOVIE_COLUMNS, null, null, null);
+            if(null == mUri){
+                Uri uriBySort = MovieContract.MovieEntry.buildMovieByCategory(Utility.getPrefSortSetting(getActivity()));
+                mQueryHandler.startQuery(1, null, uriBySort, MOVIE_COLUMNS, null, null, null);
+            }else {
+                mQueryHandler.startQuery(1, null, mUri, MOVIE_COLUMNS, null, null, null);
+            }
+
         }else {
             mQueryHandler.startQuery(1, null, uri, MOVIE_COLUMNS, null, null, null);
         }

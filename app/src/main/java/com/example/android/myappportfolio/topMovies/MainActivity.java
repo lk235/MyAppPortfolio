@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.android.myappportfolio.R;
+import com.example.android.myappportfolio.topMovies.sync.MovieSyncAdapter;
 
 
 public class MainActivity extends AppCompatActivity implements MovieListFragment.Callback {
@@ -47,13 +48,14 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
 //                    .commit();
 //        }
 
-
+        MovieSyncAdapter.initializeSyncAdapter(this);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+
         String sortTypeSetting = getPreSetting();
         if (  !sortTypeSetting.equals(mLastCateGroySetting)) {
             mLastCateGroySetting = sortTypeSetting;

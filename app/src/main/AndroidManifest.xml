@@ -38,8 +38,8 @@
             android:exported="false"
             android:syncable="true"/>
 
-        <service android:name=".topMovies.service.MovieService"></service>
-        <receiver android:name=".topMovies.service.MovieService$AlarmService"></receiver>
+        <!--<service android:name=".topMovies.service.MovieService"></service>-->
+        <!--<receiver android:name=".topMovies.service.MovieService$AlarmService"></receiver>-->
 
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".topMovies.sync.MovieAuthenticatorService">
