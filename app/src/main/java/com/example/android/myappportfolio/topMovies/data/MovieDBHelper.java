@@ -27,7 +27,7 @@ public class MovieDBHelper extends SQLiteOpenHelper{
         return sInstance;
     }
 
-    private MovieDBHelper(Context context){
+    public MovieDBHelper(Context context){
         super(context, DATABASE_NAME, null, DATEBASE_VRESION);
     }
 
