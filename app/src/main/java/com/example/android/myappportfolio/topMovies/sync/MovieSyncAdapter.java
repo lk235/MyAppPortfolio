@@ -1,18 +1,24 @@
-package com.example.android.myappportfolio.topMovies.service;
+package com.example.android.myappportfolio.topMovies.sync;
 
-import android.app.IntentService;
-import android.content.BroadcastReceiver;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.AbstractThreadedSyncAdapter;
+import android.content.ContentProviderClient;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SyncResult;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.MainActivity;
 import com.example.android.myappportfolio.topMovies.Movie;
 import com.example.android.myappportfolio.topMovies.MovieLab;
+import com.example.android.myappportfolio.topMovies.Utility;
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
+import com.example.android.myappportfolio.topMovies.service.MovieService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +36,11 @@ import java.util.Vector;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by lk235 on 2017/5/11.
+ * Created by lk235 on 2017/5/13.
  */
 
-public class MovieService extends IntentService {
+public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
+
 
     public static final String SORT_SETTING = "sort_setting";
     private static final String LOG_TAG = MovieService.class.getSimpleName();
@@ -55,15 +62,46 @@ public class MovieService extends IntentService {
     String movieJsonStr = null;
     String apiKey = "3ec36d13c40b8c13f44a956ac6b7f785";
     String language = "zh";
+    // Global variables
+    // Define a variable to contain a content resolver instance
+    ContentResolver mContentResolver;
 
-    public MovieService() {
-        super("MOVIE");
+    /**
+     * Set up the sync adapter
+     */
+    public MovieSyncAdapter(Context context, boolean autoInitialize) {
+        super(context, autoInitialize);
+        /*
+         * If your app uses a content resolver, get an instance of it
+         * from the incoming Context
+         */
+        mContentResolver = context.getContentResolver();
+    }
+
+
+    /**
+     * Set up the sync adapter. This form of the
+     * constructor maintains compatibility with Android 3.0
+     * and later platform versions
+     */
+    public MovieSyncAdapter(
+            Context context,
+            boolean autoInitialize,
+            boolean allowParallelSyncs) {
+        super(context, autoInitialize, allowParallelSyncs);
+        /*
+         * If your app uses a content resolver, get an instance of it
+         * from the incoming Context
+         */
+        mContentResolver = context.getContentResolver();
+
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        String sortSetting = intent.getStringExtra(SORT_SETTING);
-        mMovieLab = MovieLab.get(this);
+    public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+        Log.d(LOG_TAG, "onPerformSync Called.");
+        String sortSetting = Utility.getPrefSortSetting(getContext());
+        mMovieLab = MovieLab.get(getContext());
         ArrayList<String[]> stringArrayList = null;
 
         Uri uri = Uri.parse(MOVIE_URL).buildUpon()
@@ -145,7 +183,7 @@ public class MovieService extends IntentService {
             if ( cVVector.size() > 0 ) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-                inserted = this.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
+                inserted = getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
             }
             Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
             //mMovieLab.addMovie(movie);
@@ -425,14 +463,55 @@ public class MovieService extends IntentService {
         return arr;
     }
 
-    public static class AlarmService extends BroadcastReceiver{
-        @Override
-        public void onReceive(Context context, Intent intent) {
-           Intent sendIntent = new Intent(context, MovieService.class);
-            sendIntent.putExtra(SORT_SETTING, intent.getStringExtra(SORT_SETTING));
-            context.startService(sendIntent);
+
+    /**
+     * Helper method to have the sync adapter sync immediately
+     * @param context The context used to access the account service
+     */
+    public static void syncImmediately(Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        ContentResolver.requestSync(getSyncAccount(context),
+                context.getString(R.string.content_authority), bundle);
+    }
+
+    /**
+     * Helper method to get the fake account to be used with SyncAdapter, or make a new one
+     * if the fake account doesn't exist yet.  If we make a new account, we call the
+     * onAccountCreated method so we can initialize things.
+     *
+     * @param context The context used to access the account service
+     * @return a fake account.
+     */
+    public static Account getSyncAccount(Context context) {
+        // Get an instance of the Android account manager
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+
+        // Create the account type and default account
+        Account newAccount = new Account(
+                context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
+
+        // If the password doesn't exist, the account doesn't exist
+        if ( null == accountManager.getPassword(newAccount) ) {
+
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+            if (!accountManager.addAccountExplicitly(newAccount, "", null)) {
+                return null;
+            }
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call ContentResolver.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
+
         }
+        return newAccount;
     }
 
     }
-

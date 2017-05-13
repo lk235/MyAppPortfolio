@@ -1,6 +1,8 @@
 package com.example.android.myappportfolio.topMovies;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +39,7 @@ import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
 import com.example.android.myappportfolio.topMovies.data.MovieDBHelper;
 import com.example.android.myappportfolio.topMovies.service.MovieService;
+import com.example.android.myappportfolio.topMovies.sync.MovieSyncAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -271,10 +274,22 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
      * This method get the sharedPreftrence value and call the asyncTask to get movie data.
      */
     private void updateMovieData() {
-        Intent intent = new Intent(getActivity(), MovieService.class);
-        intent.putExtra(MovieService.SORT_SETTING, getPrefCateGorySetting());
-        getActivity().startService(intent);
-       // new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefCateGorySetting());
+//        Intent intent = new Intent(getActivity(), MovieService.class);
+//        intent.putExtra(MovieService.SORT_SETTING, getPrefCateGorySetting());
+//        getActivity().startService(intent);
+       //new FetchMovieTask(getActivity(), mMovieLab).execute(getPrefCateGorySetting());
+
+//        Intent alarmIntent = new Intent(getActivity(), MovieService.AlarmService.class);
+//        alarmIntent.putExtra(MovieService.SORT_SETTING, Utility.getPrefSortSetting(getActivity()));
+//
+//        //Wrap in a pending intent which only fires once.
+//        PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0,alarmIntent,PendingIntent.FLAG_ONE_SHOT);//getBroadcast(context, 0, i, 0);
+//
+//        AlarmManager am=(AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+//
+//        //Set the AlarmManager to wake up the system.
+//        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 50000, pi);
+        MovieSyncAdapter.syncImmediately(getActivity());
 
 
     }
