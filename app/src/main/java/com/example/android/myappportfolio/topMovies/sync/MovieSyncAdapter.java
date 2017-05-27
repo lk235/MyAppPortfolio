@@ -13,11 +13,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -26,6 +28,7 @@ import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.MainActivity;
 import com.example.android.myappportfolio.topMovies.Movie;
 import com.example.android.myappportfolio.topMovies.MovieLab;
+import com.example.android.myappportfolio.topMovies.MovieListFragment;
 import com.example.android.myappportfolio.topMovies.Utility;
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
 
@@ -38,6 +41,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -58,8 +63,11 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String COLLECT = "收藏";
 
     // Interval at which to sync with the movie, in seconds.
-    public static final int SYNC_INTERVAL = 60 * 60 * 24;  // 3 hours
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+//    public static final int SYNC_INTERVAL = 60 * 60 * 24;  // 3 hours
+//    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+
+    public static final String SYNC_DONE = "sync_done";
+
 
     //private final Context mContext;
     // private MovieAdapter mMovieAdapter;
@@ -68,6 +76,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final String TAG = "FetchMovieData";
     private final String MOVIE_URL = "http://api.themoviedb.org/3/movie";
+
     private final String IMAGE_URL = "https://image.tmdb.org/t/p/w185";
     private final String VOTE = "VOTE: ";
     private final String API_KEY = "api_key";
@@ -80,6 +89,15 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int INDEX_MOVIE_TITLE = 0;
 
     public static final int MOVIE_NOTIFICATION_ID = 1000;
+
+    @Retention(RetentionPolicy.SOURCE)
+            @IntDef({SERVER_STATUS_OK, SERVER_STATUS_DOWN, SERVER_STATUS_INVALID, SERVER_STATUS_UNKNOWN })
+    public @interface ServerStatus{}
+
+    public static final int SERVER_STATUS_OK = 0;
+    public static final int SERVER_STATUS_DOWN = 1;
+    public static final int SERVER_STATUS_INVALID = 2;
+    public static final int SERVER_STATUS_UNKNOWN = 3;
 
 
     String movieJsonStr = null;
@@ -142,6 +160,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             stringArrayList = getMovieDataFromJson(movieJsonStr);
 
         } catch (JSONException js) {
+//            setServerStatus(getContext(), SERVER_STATUS_INVALID);
             Log.e(TAG, "JSON ERROR");
         }
 
@@ -214,6 +233,9 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         Log.d(LOG_TAG, "FetchMovieTask Complete. "+ ""+bulkInserted );
+        Intent intent = new Intent(SYNC_DONE);
+        getContext().sendBroadcast(intent);
+//        setServerStatus(getContext(), SERVER_STATUS_OK);
 
             notifyMovie();
 
@@ -441,7 +463,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             if (stringBuffer.length() == 0) {
-
+//                setServerStatus(getContext(), SERVER_STATUS_DOWN);
                 movieJsonStr = null;
             }
             movieJsonStr = stringBuffer.toString();
@@ -451,6 +473,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
                 IOException ioe)
 
         {
+//            setServerStatus(getContext(), SERVER_STATUS_DOWN);
             movieJsonStr = null;
             Log.i(TAG, "" + ioe);
         } finally
@@ -544,7 +567,10 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
         /*
          * Since we've created an account
          */
-        MovieSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
+        int sync_interval = Utility.getPrefSyncSetting(context);
+        int sync_flextime = sync_interval / 3;
+        Log.i("INTERVAL", sync_interval + "");
+        MovieSyncAdapter.configurePeriodicSync(context, sync_interval, sync_flextime);
 
         /*
          * Without calling setSyncAutomatically, our periodic sync will not be enabled.
@@ -599,6 +625,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
                             new NotificationCompat.Builder(getContext())
                                     .setSmallIcon(iconId)
                                     .setContentTitle(title)
+                                    .setAutoCancel(true)
                                     .setContentText(contentText);
 
                     // Make something interesting happen when the user clicks on the notification.
@@ -635,6 +662,13 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
 
         }
         }
+
+//        static private void setServerStatus(Context context, @ServerStatus int serverStatus){
+//            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+//            SharedPreferences.Editor spEditor = sharedPreferences.edit();
+//            spEditor.putInt(context.getString(R.string.pref_server_status_key), serverStatus);
+//            spEditor.commit();
+//        }
 
 
     }

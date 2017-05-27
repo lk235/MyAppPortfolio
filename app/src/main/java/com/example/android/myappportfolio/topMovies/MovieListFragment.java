@@ -3,8 +3,12 @@ package com.example.android.myappportfolio.topMovies;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,6 +37,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.myappportfolio.R;
@@ -47,7 +52,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     public static final int MOVIE_LOADER = 0;
 
     public static final String SORT_BY_POPULAR = "popular";
@@ -93,6 +98,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     private GridView mGridView;
     private MovieAdapter mMovieAdapter;
     private String mLastSorTypeSetting;
+    private int mLastSyncSetting;
+    private ProgressDialog mProgressDialog;
+    private int mPosition = GridView.INVALID_POSITION;
+
 
 
     public interface Callback {
@@ -113,6 +122,23 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onResume(){
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+        getActivity().registerReceiver(syncFinishedReceiver, new IntentFilter(MovieSyncAdapter.SYNC_DONE));
+        Log.i("SYNC", mLastSyncSetting + "");
+        Log.i("SYNC_NOW", Utility.getPrefSyncSetting(getActivity()) + "");
+        if(mLastSyncSetting != Utility.getPrefSyncSetting(getActivity())){
+            mLastSyncSetting = Utility.getPrefSyncSetting(getActivity());
+
+            MovieSyncAdapter.configurePeriodicSync(getActivity(), mLastSyncSetting, mLastSyncSetting / 3);
+        }
+
+    }
+
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -121,16 +147,30 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.fragment_movie_main, container, false);
 
         mGridView = (GridView) rootView.findViewById(R.id.gridview_movie);
+//        TextView emptyView = (TextView)rootView.findViewById(R.id.gridview_movie_empty);
+//        mGridView.setEmptyView(emptyView);
         mMovieLab = MovieLab.get(getActivity());
 
 
         mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         mGridView.setAdapter(mMovieAdapter);
 
-        mLastSorTypeSetting = getPrefCateGorySetting();
+        mLastSorTypeSetting = Utility.getPrefSortSetting(getActivity());
+        mLastSyncSetting = Utility.getPrefSyncSetting(getActivity());
 
         if( !mLastSorTypeSetting.equals(SORT_BY_COLLECTED) && mMovieLab.isEmpty(mLastSorTypeSetting)){
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.progress_dialog_message));
+            mProgressDialog.setCancelable(true);
+            mProgressDialog.show();
             checkNetworkAndFetchData();
+//            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialog) {
+//
+//                }
+//            });
+
         }
 
 
@@ -157,6 +197,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         });
 
         Log.i("createVIEW", mLastSorTypeSetting);
+
         return rootView;
     }
 
@@ -207,6 +248,8 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mMovieAdapter.swapCursor(cursor);
+
+
     }
 
     @Override
@@ -244,11 +287,21 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         return super.onOptionsItemSelected(menuItem);
     }
 
+    @Override
+    public void onPause(){
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+        getActivity().unregisterReceiver(syncFinishedReceiver);
+    }
+
+
+
     /**
      * This method check the networkState and fetch movie data.
      */
     private void checkNetworkAndFetchData() {
-        if (isOnline()) {
+        if (Utility.isOnline(getActivity())) {
             updateMovieData();
         } else {
             Toast.makeText(getActivity(), NETWORK_NOT_CONNECTED, Toast.LENGTH_SHORT).show();
@@ -278,6 +331,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         MovieSyncAdapter.syncImmediately(getActivity());
 
 
+
     }
 
     private String getPrefCateGorySetting() {
@@ -294,12 +348,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
-    }
+
 
 
     void onSettingChanged() {
@@ -332,6 +381,46 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
         }
     }
+
+//    private void updateEmptyView() {
+//        if ( mMovieAdapter.getCount() == 0 ) {
+//            TextView tv = (TextView) getView().findViewById(R.id.gridview_movie_empty);
+//            if ( null != tv ) {
+//
+//                int message = R.string.empty_movie_list;
+//                @MovieSyncAdapter.ServerStatus int serverStatus = Utility.getServerStatus(getActivity());
+//                switch (serverStatus) {
+//                    case MovieSyncAdapter.SERVER_STATUS_DOWN:
+//                        message = R.string.emtry_movie_list_no_network;
+//                        break;
+//                    case MovieSyncAdapter.SERVER_STATUS_INVALID:
+//                        message = R.string.empty_movie_list_server_error;
+//                        break;
+//                    default:
+//                        if (!Utility.isOnline(getActivity()) ) {
+//                            message = R.string.emtry_movie_list_no_network;
+//                        }
+//                }
+//                tv.setText(message);
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key){
+//        if (key.equals(getString(R.string.pref_server_status_key))){
+//            updateEmptyView();
+//        }
+//    }
+
+    private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(mProgressDialog.isShowing())
+            mProgressDialog.cancel();
+        }
+    };
 }
 
 

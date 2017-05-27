@@ -8,6 +8,13 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Toolbar;
 
 import com.example.android.myappportfolio.R;
 
@@ -15,42 +22,15 @@ import com.example.android.myappportfolio.R;
  * Created by lk235 on 2017/3/15.
  */
 
-public class SettingActivity extends PreferenceActivity
-implements Preference.OnPreferenceChangeListener{
+public class SettingActivity extends AppCompatActivity {
 
     public static final String KEY_PREF_SORT_TYPE = "Sort Type";
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_key)));
+        setContentView(R.layout.setting_toolbar);
+        getFragmentManager().beginTransaction().replace(R.id.setting_container, new SettingFragment()).commit();
     }
-
-    private void bindPreferenceSummaryToValue(Preference preference){
-        preference.setOnPreferenceChangeListener(this);
-        onPreferenceChange(preference,
-                PreferenceManager.getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(),""));
-
-    }
-
-    @Override
-    public boolean onPreferenceChange(Preference preference,Object value){
-        String stringValue = value.toString();
-        ListPreference listPreference = (ListPreference)preference;
-        int prefIndex = listPreference.findIndexOfValue(stringValue);
-        preference.setSummary(listPreference.getEntries()[prefIndex]);
-
-        return true;
-    }
-
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    @Override
-//    public Intent getParentActivityIntent() {
-//        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//
-//    }
-
 }
+

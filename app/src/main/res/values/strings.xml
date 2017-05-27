@@ -15,6 +15,10 @@
     <string name="pref_sort_title">SORT BY</string>
     <string name="pref_sort_key">Sort Type</string>
 
+    <string name="pref_sync_default">86400</string>
+    <string name="pref_sync_title">SYNC INTERVAL</string>
+    <string name="pref_sync_key">sync_key</string>
+
     <string name="movie_collect">收藏</string>
     <string name="movie_colleted">已收藏</string>
     <string name="movie_trailer">预告片</string>
@@ -32,6 +36,22 @@
         <item>top_rated</item>
         <item>已收藏</item>
     </string-array>
+
+    <string-array name="sync_interval">
+        <item>1 Hour</item>
+        <item>3 Hour</item>
+        <item>24 Hour</item>
+        <item>72 Hour</item>
+    </string-array>
+
+    <string-array name="sync_interval_value">
+        <item>3600</item>
+        <item>10800</item>
+        <item>86400</item>
+        <item>259200</item>
+    </string-array>
+    
+    <string name="progress_dialog_message">正在下载</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -60,6 +80,21 @@
     <string name="pref_enable_notifications_true"> Enabled</string>
     <string name="pref_enable_notifications_false">Not Enabled</string>
     <string name="pref_enable_notifications_default" translatable="false">true</string>
+
+
+
+
+    <!-- Key name for storing server status in SharedPreferences -->
+    <string name="pref_server_status_key" translatable="false">server-status</string>
+
+
+
+    <!--Empty Movie Database-->
+    <string name="empty_movie_list">No Movie Information Avaliable</string>
+    <string name="emtry_movie_list_no_network">No movie information available. The network is not available to fetch movie data.</string>
+    <string name="empty_movie_list_server_down">No weather information available. The server is not returning data.</string>
+    <string name="empty_movie_list_server_error">No weather information available. The server is not returning valid data. Please check for an updated version of hotmovie.</string>
+
 
 
 
