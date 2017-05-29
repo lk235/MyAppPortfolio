@@ -127,6 +127,12 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 //        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 //        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         super.onResume();
+        mLastSorTypeSetting = Utility.getPrefSortSetting(getActivity());
+        if( !mLastSorTypeSetting.equals(SORT_BY_COLLECTED) && mMovieLab.isEmpty(mLastSorTypeSetting)){
+            showProgressDialog();
+            checkNetworkAndFetchData();
+
+        }
         getActivity().registerReceiver(syncFinishedReceiver, new IntentFilter(MovieSyncAdapter.SYNC_DONE));
         Log.i("SYNC", mLastSyncSetting + "");
         Log.i("SYNC_NOW", Utility.getPrefSyncSetting(getActivity()) + "");
@@ -155,23 +161,14 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
         mGridView.setAdapter(mMovieAdapter);
 
-        mLastSorTypeSetting = Utility.getPrefSortSetting(getActivity());
+       // mLastSorTypeSetting = Utility.getPrefSortSetting(getActivity());
         mLastSyncSetting = Utility.getPrefSyncSetting(getActivity());
 
-        if( !mLastSorTypeSetting.equals(SORT_BY_COLLECTED) && mMovieLab.isEmpty(mLastSorTypeSetting)){
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.progress_dialog_message));
-            mProgressDialog.setCancelable(true);
-            mProgressDialog.show();
-            checkNetworkAndFetchData();
-//            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//                @Override
-//                public void onCancel(DialogInterface dialog) {
+//        if( !mLastSorTypeSetting.equals(SORT_BY_COLLECTED) && mMovieLab.isEmpty(mLastSorTypeSetting)){
+//            showProgressDialog();
+//            checkNetworkAndFetchData();
 //
-//                }
-//            });
-
-        }
+//        }
 
 
 
@@ -196,10 +193,11 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-        Log.i("createVIEW", mLastSorTypeSetting);
 
         return rootView;
     }
+
+
 
 
     @Override
@@ -382,43 +380,33 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-//    private void updateEmptyView() {
-//        if ( mMovieAdapter.getCount() == 0 ) {
-//            TextView tv = (TextView) getView().findViewById(R.id.gridview_movie_empty);
-//            if ( null != tv ) {
-//
-//                int message = R.string.empty_movie_list;
-//                @MovieSyncAdapter.ServerStatus int serverStatus = Utility.getServerStatus(getActivity());
-//                switch (serverStatus) {
-//                    case MovieSyncAdapter.SERVER_STATUS_DOWN:
-//                        message = R.string.emtry_movie_list_no_network;
-//                        break;
-//                    case MovieSyncAdapter.SERVER_STATUS_INVALID:
-//                        message = R.string.empty_movie_list_server_error;
-//                        break;
-//                    default:
-//                        if (!Utility.isOnline(getActivity()) ) {
-//                            message = R.string.emtry_movie_list_no_network;
-//                        }
-//                }
-//                tv.setText(message);
-//            }
-//        }
-//    }
 
-//    @Override
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key){
-//        if (key.equals(getString(R.string.pref_server_status_key))){
-//            updateEmptyView();
-//        }
-//    }
+    private void showProgressDialog() {
+        if(mProgressDialog == null){
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.progress_dialog_message));
+            mProgressDialog.setCancelable(true);
+        }
 
-    private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
+        if(!mProgressDialog.isShowing()){
+            mProgressDialog.show();
+        }
+
+    }
+
+    private void dismissProgressDialog(){
+        if(mProgressDialog != null && mProgressDialog.isShowing()){
+            mProgressDialog.dismiss();
+
+        }
+    }
+
+
+    private   BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(mProgressDialog.isShowing())
-            mProgressDialog.cancel();
+            dismissProgressDialog();
         }
     };
 }

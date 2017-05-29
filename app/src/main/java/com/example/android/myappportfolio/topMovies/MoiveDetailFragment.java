@@ -2,8 +2,11 @@ package com.example.android.myappportfolio.topMovies;
 
 
 import android.content.AsyncQueryHandler;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.android.myappportfolio.R;
 import com.example.android.myappportfolio.topMovies.data.MovieContract;
+import com.example.android.myappportfolio.topMovies.sync.MovieSyncAdapter;
 import com.squareup.picasso.Picasso;
 
 
@@ -79,11 +83,30 @@ public class MoiveDetailFragment extends Fragment  {
     private MovieTrailerAdapter trailerAdapter;
     private AsyncQueryHandler mQueryHandler;
     private Uri mUri;
+    private Uri intentUri;
+    private String mLastSorTypeSetting;
 
 
 
     public MoiveDetailFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        getActivity().registerReceiver(syncFinishedReceiver, new IntentFilter(MovieSyncAdapter.SYNC_DONE));
+        if( !mLastSorTypeSetting.equals(Utility.getPrefSortSetting(getActivity()))){
+            UpdateTwoPaneDetailView();
+        }
+        mLastSorTypeSetting = Utility.getPrefSortSetting(getActivity());
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        getActivity().unregisterReceiver(syncFinishedReceiver);
     }
 
 
@@ -113,7 +136,7 @@ public class MoiveDetailFragment extends Fragment  {
         mRunTimeTextView = (TextView) detailView.findViewById(R.id.runtime_text_view);
         mCollectButton = (Button) detailView.findViewById(R.id.movie_collect_button);
         mReviewsTextView = (TextView) reviewsView.findViewById(R.id.movie_review_text_view);
-
+        mLastSorTypeSetting = Utility.getPrefSortSetting(getActivity());
 
 //        mTrailerButton = (Button) rootView.findViewById(R.id.movie_trailer_button);
 //        mReviewsButton = (Button) rootView.findViewById(R.id.movie_reviews_button);
@@ -124,8 +147,8 @@ public class MoiveDetailFragment extends Fragment  {
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
 
 
-                if (cursor == null) {
-
+                if (cursor == null || cursor.getCount() == 0) {
+                     return;
                 }else {
                     cursor.moveToFirst();
                     Picasso.with(getActivity())
@@ -178,17 +201,17 @@ public class MoiveDetailFragment extends Fragment  {
         };
 
         Intent intent = getActivity().getIntent();
-        final Uri uri = intent.getData();
-        if(intent == null || uri == null){
+        intentUri = intent.getData();
+        if(intent == null ||  intentUri == null){
             if(null == mUri){
-                Uri uriBySort = MovieContract.MovieEntry.buildMovieByCategory(Utility.getPrefSortSetting(getActivity()));
-                mQueryHandler.startQuery(1, null, uriBySort, MOVIE_COLUMNS, null, null, null);
+                UpdateTwoPaneDetailView();
+
             }else {
                 mQueryHandler.startQuery(1, null, mUri, MOVIE_COLUMNS, null, null, null);
             }
 
         }else {
-            mQueryHandler.startQuery(1, null, uri, MOVIE_COLUMNS, null, null, null);
+            mQueryHandler.startQuery(1, null, intentUri, MOVIE_COLUMNS, null, null, null);
         }
 
 
@@ -198,8 +221,12 @@ public class MoiveDetailFragment extends Fragment  {
 
             @Override
             public void onClick(View v) {
-
-
+                Uri uri;
+                if(intentUri == null){
+                    uri = mUri;
+                }else {
+                    uri = intentUri;
+                }
                 switch (mCollectButton.getText().toString()) {
                     case MOVIE_COLLECT:
                         mCollectButton.setText(R.string.movie_colleted);
@@ -243,14 +270,26 @@ public class MoiveDetailFragment extends Fragment  {
 
     void onSettingChanged(){
         //String currentSetting = Utility.getPrefSortSetting(getActivity());
-        Uri uri = mUri;
-        if(null != uri)
-        mQueryHandler.startQuery(1, null, uri, MOVIE_COLUMNS, null, null, null);
+       if(mUri != null)
+        mQueryHandler.startQuery(1, null, mUri, MOVIE_COLUMNS, null, null, null);
 
 
 
     }
 
+    private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intentUri == null)
+            UpdateTwoPaneDetailView();
+        }
+    };
+
+    private void UpdateTwoPaneDetailView() {
+        Uri uriBySort = MovieContract.MovieEntry.buildMovieByCategory(Utility.getPrefSortSetting(getActivity()));
+        mQueryHandler.startQuery(1, null, uriBySort, MOVIE_COLUMNS, null, null, null);
+    }
 
 
 }
